@@ -4,8 +4,8 @@
     <WelcomeScreen v-if="showWelcome" />
     
     <!-- Image Selection Screen -->
-    <div v-else-if="showImageGallery" class="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100">
-      <div class="container mx-auto px-4 py-8">
+    <div v-else-if="showImageGallery" class="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center p-4 sm:p-6">
+      <div class="w-full max-w-6xl min-h-0">
         <header class="text-center mb-8">
           <h1 class="text-4xl font-bold text-puzzle-primary mb-2">
             🧩 Slide Puzzle Fun! 🧩
@@ -22,8 +22,8 @@
     </div>
     
     <!-- Puzzle Game Screen -->
-    <div v-else-if="showPuzzle" class="min-h-screen bg-gradient-to-br from-green-100 to-blue-100">
-      <div class="container mx-auto px-4 py-8">
+    <div v-else-if="showPuzzle" class="min-h-screen bg-gradient-to-br from-green-100 to-blue-100 flex items-center justify-center p-4 sm:p-6">
+      <div class="w-full max-w-4xl min-h-0">
         <header class="text-center mb-8">
           <h1 class="text-3xl font-bold text-puzzle-primary mb-2">
             🧩 {{ currentPuzzle?.alt === 'Number Puzzle' ? 'Number Puzzle' : (currentPuzzle?.alt || 'Puzzle') }} 🧩
@@ -40,30 +40,28 @@
     </div>
     
     <!-- Victory Screen -->
-    <div v-else-if="showVictory" class="min-h-screen bg-gradient-to-br from-yellow-100 to-pink-100">
-      <div class="container mx-auto px-4 py-8">
-        <div class="text-center">
-          <div class="mb-8">
-            <h1 class="text-5xl font-bold text-puzzle-success mb-4 animate-bounce">
-              🎉 Congratulations! 🎉
-            </h1>
-            <p class="text-2xl text-gray-700 mb-4">
-              You solved the puzzle!
-            </p>
-            <div class="text-lg text-gray-600 space-y-2">
-              <p>✨ Moves: <span class="font-bold text-puzzle-primary">{{ moves }}</span></p>
-              <p>⏱️ Time: <span class="font-bold text-puzzle-primary">{{ formatTime(elapsedTime) }}</span></p>
-            </div>
+    <div v-else-if="showVictory" class="min-h-screen bg-gradient-to-br from-yellow-100 to-pink-100 flex items-center justify-center p-4 sm:p-6">
+      <div class="w-full max-w-2xl text-center">
+        <div class="mb-8">
+          <h1 class="text-5xl font-bold text-puzzle-success mb-4 animate-bounce">
+            🎉 Congratulations! 🎉
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            You solved the puzzle!
+          </p>
+          <div class="text-lg text-gray-600 space-y-2">
+            <p>✨ Moves: <span class="font-bold text-puzzle-primary">{{ moves }}</span></p>
+            <p>⏱️ Time: <span class="font-bold text-puzzle-primary">{{ formatTime(elapsedTime) }}</span></p>
           </div>
-          
-          <div class="space-y-4">
-            <button @click="playAgain" class="btn-primary mr-4">
-              🎮 Play Again
-            </button>
-            <button @click="newPuzzle" class="btn-secondary">
-              🎯 New Puzzle
-            </button>
-          </div>
+        </div>
+        
+        <div class="space-y-4">
+          <button @click="playAgain" class="btn-primary mr-4">
+            🎮 Play Again
+          </button>
+          <button @click="newPuzzle" class="btn-secondary">
+            🎯 New Puzzle
+          </button>
         </div>
       </div>
     </div>
