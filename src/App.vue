@@ -26,10 +26,10 @@
       <div class="container mx-auto px-4 py-8">
         <header class="text-center mb-8">
           <h1 class="text-3xl font-bold text-puzzle-primary mb-2">
-            🧩 {{ currentPuzzle?.alt || 'Puzzle' }} 🧩
+            🧩 {{ currentPuzzle?.alt === 'Number Puzzle' ? 'Number Puzzle' : (currentPuzzle?.alt || 'Puzzle') }} 🧩
           </h1>
           <p class="text-lg text-gray-600">
-            Slide the pieces to solve the puzzle!
+            {{ currentPuzzle?.alt === 'Number Puzzle' ? 'Slide the numbered pieces into order!' : 'Slide the pieces to solve the puzzle!' }}
           </p>
         </header>
         

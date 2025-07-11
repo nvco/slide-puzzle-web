@@ -1,8 +1,8 @@
 <template>
   <div class="image-gallery-container">
     <div class="gallery-header">
-      <h2 class="gallery-title">Choose Your Puzzle! 🎨</h2>
-      <p class="gallery-subtitle">Pick an image to turn into a puzzle</p>
+      <h2 class="gallery-title">Choose Your Puzzle! 🧩</h2>
+      <p class="gallery-subtitle">Start with numbers to test the mechanics!</p>
     </div>
 
     <!-- Category Tabs -->
@@ -45,6 +45,14 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Number Puzzle Button -->
+    <div class="number-puzzle-section">
+      <button @click="createNumberPuzzle" class="btn-primary number-btn">
+        🔢 Create Number Puzzle
+      </button>
+      <p class="number-hint">Test the sliding mechanics with colorful numbers</p>
     </div>
 
     <!-- Random Selection Button -->
@@ -160,6 +168,21 @@ const clearSelection = () => {
   selectedImage.value = null
 }
 
+// Create number puzzle
+const createNumberPuzzle = () => {
+  // Create a dummy "image" object for numbers
+  const numberPuzzle = {
+    id: 'numbers-puzzle',
+    filename: 'numbers.puzzle',
+    path: '/numbers',
+    alt: 'Number Puzzle',
+    category: 'numbers'
+  }
+  
+  gameStore.selectImage(numberPuzzle)
+  console.log('🔢 Number puzzle created!')
+}
+
 // Image loading handlers
 const handleImageLoad = (event) => {
   console.log('✅ Image loaded:', event.target.src)
@@ -272,6 +295,18 @@ onMounted(() => {
 
 .select-icon {
   @apply text-2xl filter drop-shadow-lg;
+}
+
+.number-puzzle-section {
+  @apply text-center mb-6;
+}
+
+.number-btn {
+  @apply mb-2;
+}
+
+.number-hint {
+  @apply text-sm text-gray-500;
 }
 
 .random-selection {

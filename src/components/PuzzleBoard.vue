@@ -11,20 +11,14 @@
           class="puzzle-board solved-preview"
           :class="`grid-${puzzleSize}x${puzzleSize}`"
         >
-          <div
-            v-for="(piece, index) in solvedPieces"
-            :key="`solved-${index}`"
-            class="puzzle-piece solved-piece"
-            :style="getPieceStyle(piece, index)"
-          >
-            <img 
-              v-if="currentImage"
-              :src="currentImage.path"
-              :alt="currentImage.alt"
-              class="piece-image"
-              draggable="false"
-            />
-          </div>
+                     <div
+             v-for="(piece, index) in solvedPieces"
+             :key="`solved-${index}`"
+             class="puzzle-piece solved-piece"
+             :style="getPieceStyle(piece, index)"
+           >
+             <div v-if="piece !== 0" class="piece-number">{{ piece }}</div>
+           </div>
         </div>
       </div>
 
@@ -34,28 +28,22 @@
           class="puzzle-board game-board"
           :class="`grid-${puzzleSize}x${puzzleSize}`"
         >
-          <div
-            v-for="(piece, index) in gamePieces"
-            :key="`game-${index}`"
-            class="puzzle-piece game-piece"
-            :class="{ 
-              'empty': piece === 0,
-              'moveable': isMoveable(index),
-              'animating': animating 
-            }"
-            :style="getPieceStyle(piece, index)"
-            @click="movePiece(index)"
-            @touchstart="handleTouchStart(index)"
-            @touchend="handleTouchEnd(index)"
-          >
-            <img 
-              v-if="piece !== 0 && currentImage"
-              :src="currentImage.path"
-              :alt="currentImage.alt"
-              class="piece-image"
-              draggable="false"
-            />
-          </div>
+                     <div
+             v-for="(piece, index) in gamePieces"
+             :key="`game-${index}`"
+             class="puzzle-piece game-piece"
+             :class="{ 
+               'empty': piece === 0,
+               'moveable': isMoveable(index),
+               'animating': animating 
+             }"
+             :style="getPieceStyle(piece, index)"
+             @click="movePiece(index)"
+             @touchstart="handleTouchStart(index)"
+             @touchend="handleTouchEnd(index)"
+           >
+             <div v-if="piece !== 0" class="piece-number">{{ piece }}</div>
+           </div>
         </div>
       </div>
     </div>
@@ -138,9 +126,6 @@ const isMoveable = (index) => {
 
 // Get CSS styles for each piece
 const getPieceStyle = (piece, index) => {
-  const size = puzzleSize.value
-  const pieceSize = 100 / size
-  
   if (piece === 0) {
     return {
       opacity: 0,
@@ -148,14 +133,20 @@ const getPieceStyle = (piece, index) => {
     }
   }
   
-  // Calculate background position for image cropping
-  const originalRow = Math.floor((piece - 1) / size)
-  const originalCol = (piece - 1) % size
+  // Color palette for numbered pieces
+  const colors = [
+    '#FF6B6B', // Red
+    '#4ECDC4', // Teal  
+    '#45B7D1', // Blue
+    '#96CEB4', // Green
+    '#FFEAA7', // Yellow
+    '#DDA0DD', // Plum
+    '#F4A460', // Sandy Brown
+    '#87CEEB', // Sky Blue
+  ]
   
   return {
-    backgroundImage: currentImage.value ? `url(${currentImage.value.path})` : 'none',
-    backgroundSize: `${size * 100}% ${size * 100}%`,
-    backgroundPosition: `-${originalCol * pieceSize}% -${originalRow * pieceSize}%`,
+    backgroundColor: colors[(piece - 1) % colors.length],
     aspectRatio: '1/1'
   }
 }
@@ -287,7 +278,7 @@ onMounted(() => {
 .puzzle-piece {
   @apply relative rounded-lg border-2 border-gray-300 overflow-hidden;
   @apply transition-all duration-300 ease-out;
-  background-repeat: no-repeat;
+  @apply flex items-center justify-center;
   cursor: pointer;
 }
 
@@ -309,8 +300,10 @@ onMounted(() => {
   @apply hover:scale-100 hover:shadow-md;
 }
 
-.piece-image {
-  @apply w-full h-full object-cover;
+.piece-number {
+  @apply text-3xl font-bold text-white;
+  @apply filter drop-shadow-lg;
+  @apply select-none;
 }
 
 .game-controls {
@@ -351,6 +344,10 @@ onMounted(() => {
   .puzzle-board-wrapper {
     width: 280px;
     height: 280px;
+  }
+  
+  .piece-number {
+    @apply text-2xl;
   }
   
   .game-stats {
