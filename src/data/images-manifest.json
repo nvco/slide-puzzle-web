@@ -1,0 +1,40 @@
+{
+  "categories": {
+    "animals": [
+      {
+        "id": "animals-0",
+        "filename": "placeholder-cat.svg",
+        "path": "/src/assets/puzzle-images/animals/placeholder-cat.svg",
+        "alt": "placeholder cat",
+        "category": "animals"
+      },
+      {
+        "id": "animals-1",
+        "filename": "placeholder-dog.svg",
+        "path": "/src/assets/puzzle-images/animals/placeholder-dog.svg",
+        "alt": "placeholder dog",
+        "category": "animals"
+      }
+    ],
+    "cartoons": [
+      {
+        "id": "cartoons-0",
+        "filename": "placeholder-smiley.svg",
+        "path": "/src/assets/puzzle-images/cartoons/placeholder-smiley.svg",
+        "alt": "placeholder smiley",
+        "category": "cartoons"
+      }
+    ],
+    "landscapes": [
+      {
+        "id": "landscapes-0",
+        "filename": "placeholder-mountain.svg",
+        "path": "/src/assets/puzzle-images/landscapes/placeholder-mountain.svg",
+        "alt": "placeholder mountain",
+        "category": "landscapes"
+      }
+    ]
+  },
+  "totalImages": 4,
+  "lastGenerated": "2025-07-11T18:44:46.518Z"
+}

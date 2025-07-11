@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Comic Sans MS', cursive, system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-blue-50 to-purple-50;
+  }
+}
+
+@layer components {
+  .puzzle-piece {
+    @apply rounded-lg shadow-md bg-white border-2 border-gray-200;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:shadow-lg hover:scale-105;
+  }
+  
+  .puzzle-piece:active {
+    @apply scale-95;
+  }
+  
+  .btn-primary {
+    @apply bg-puzzle-primary hover:bg-red-500 text-white font-bold py-3 px-6 rounded-full;
+    @apply transition-all duration-200 ease-in-out;
+    @apply shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-secondary {
+    @apply bg-puzzle-secondary hover:bg-teal-500 text-white font-bold py-3 px-6 rounded-full;
+    @apply transition-all duration-200 ease-in-out;
+    @apply shadow-lg hover:shadow-xl;
+  }
+}
+
+@layer utilities {
+  .flip-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+  
+  .flip-front {
+    backface-visibility: hidden;
+  }
+  
+  .flip-back {
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
+  }
+} 
