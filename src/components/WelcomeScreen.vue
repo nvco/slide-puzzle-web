@@ -1,17 +1,29 @@
 <template>
   <div class="welcome-screen">
     <div class="welcome-animation">
-      <!-- Animated Demo Puzzle -->
+      <!-- Animated Demo Puzzle with Classic Plastic Frame -->
       <div class="demo-puzzle">
-        <div class="demo-board">
-          <div 
-            v-for="(piece, index) in demoPieces"
-            :key="index"
-            class="demo-piece"
-            :class="{ 'empty': piece === 0, 'moving': movingPiece === index }"
-            :style="getDemoPieceStyle(piece)"
-          >
-            <div v-if="piece !== 0" class="demo-number">{{ piece }}</div>
+        <div class="puzzle-frame">
+          <!-- Puzzle playing area -->
+          <div class="puzzle-well">
+            <div class="demo-board">
+              <div 
+                v-for="(piece, index) in demoPieces"
+                :key="index"
+                class="demo-piece"
+                :class="{ 'empty': piece === 0, 'moving': movingPiece === index }"
+                :style="getDemoPieceStyle(piece)"
+              >
+                <div v-if="piece !== 0" class="demo-number">{{ piece }}</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Reference image at bottom -->
+          <div class="reference-image">
+            <div class="reference-content">
+              <span class="reference-text">NUMBERS</span>
+            </div>
           </div>
         </div>
       </div>
@@ -75,14 +87,9 @@ let currentMoveIndex = 0
 const getDemoPieceStyle = (piece) => {
   if (piece === 0) return { opacity: 0 }
   
-  const colors = [
-    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', 
-    '#FFEAA7', '#DDA0DD', '#F4A460', '#87CEEB'
-  ]
-  
   return {
-    backgroundColor: colors[(piece - 1) % colors.length],
-    transform: movingPiece.value === piece ? 'scale(1.1)' : 'scale(1)'
+    backgroundColor: '#ffffff',
+    transform: movingPiece.value === piece ? 'scale(1.05)' : 'scale(1)'
   }
 }
 
@@ -133,7 +140,7 @@ onUnmounted(() => {
 
 <style scoped>
 .welcome-screen {
-  @apply min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-green-100;
+  @apply min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50;
   @apply flex items-center justify-center p-4;
 }
 
@@ -142,33 +149,108 @@ onUnmounted(() => {
 }
 
 .demo-puzzle {
-  @apply mb-8;
+  @apply mb-12;
+}
+
+/* Classic Plastic Frame */
+.puzzle-frame {
+  @apply relative mx-auto;
+  width: 320px;
+  height: 400px;
+  background: linear-gradient(135deg, #18C3FF 0%, #1AB5E6 100%) !important;
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 25px rgba(0,0,0,0.15),
+    0 4px 12px rgba(0,0,0,0.1),
+    inset 0 2px 4px rgba(255,255,255,0.3),
+    inset 0 -2px 4px rgba(0,0,0,0.1);
+  padding: 30px;
+  
+  /* Glossy plastic effect */
+  background-image: 
+    linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+}
+
+.puzzle-well {
+  @apply w-full;
+  height: 260px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 8px;
+  box-shadow: 
+    inset 0 3px 6px rgba(0,0,0,0.15),
+    inset 0 1px 3px rgba(0,0,0,0.1);
+  padding: 4px;
+  margin-bottom: 16px;
+}
+
+.reference-image {
+  @apply w-full;
+  height: 80px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 8px;
+  box-shadow: 
+    inset 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reference-content {
+  @apply text-center;
+}
+
+.reference-text {
+  @apply text-lg font-bold text-blue-600;
+  letter-spacing: 1px;
 }
 
 .demo-board {
-  @apply w-48 h-48 mx-auto bg-white rounded-xl shadow-2xl border-4 border-puzzle-primary p-2;
+  @apply w-full h-full;
   @apply grid grid-cols-3 grid-rows-3 gap-1;
+  background: transparent;
+  border-radius: 4px;
 }
 
 .demo-piece {
-  @apply rounded-lg border-2 border-white;
+  @apply rounded-md;
   @apply flex items-center justify-center;
   @apply transition-all duration-300 ease-out;
-  @apply shadow-md;
+  @apply relative;
+  
+  /* Clean plastic piece styling */
+  box-shadow: 
+    0 2px 6px rgba(0,0,0,0.15),
+    0 1px 3px rgba(0,0,0,0.1),
+    inset 0 1px 2px rgba(255,255,255,0.2);
+  
+  border: 1px solid rgba(255,255,255,0.3);
+  
+  /* Subtle glossy effect */
+  background-image: 
+    linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
 }
 
 .demo-piece.empty {
   @apply opacity-0;
+  box-shadow: none;
 }
 
 .demo-piece.moving {
-  @apply shadow-xl;
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.2),
+    0 2px 6px rgba(0,0,0,0.15),
+    inset 0 1px 2px rgba(255,255,255,0.3);
 }
 
 .demo-number {
-  @apply text-2xl font-bold text-white;
-  @apply filter drop-shadow-lg;
+  @apply text-2xl font-bold text-gray-800;
+  @apply filter drop-shadow-sm;
+  text-shadow: 
+    0 1px 2px rgba(0,0,0,0.1);
+  font-family: 'Arial', sans-serif;
 }
+
+
 
 .welcome-message {
   @apply mb-8;
@@ -195,6 +277,7 @@ onUnmounted(() => {
 .step-number {
   @apply w-8 h-8 bg-puzzle-accent text-white rounded-full;
   @apply flex items-center justify-center font-bold text-sm;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .step-text {
@@ -210,20 +293,36 @@ onUnmounted(() => {
 
 /* Mobile responsiveness */
 @media (max-width: 640px) {
+  .puzzle-frame {
+    width: 260px;
+    height: 320px;
+    padding: 20px;
+  }
+  
+  .puzzle-well {
+    height: 200px;
+    padding: 4px;
+    margin-bottom: 12px;
+  }
+  
+  .reference-image {
+    height: 60px;
+  }
+  
+  .reference-text {
+    @apply text-base;
+  }
+  
+  .demo-number {
+    @apply text-lg;
+  }
+  
   .welcome-title {
     @apply text-3xl;
   }
   
   .welcome-subtitle {
     @apply text-lg;
-  }
-  
-  .demo-board {
-    @apply w-40 h-40;
-  }
-  
-  .demo-number {
-    @apply text-xl;
   }
   
   .start-button {
