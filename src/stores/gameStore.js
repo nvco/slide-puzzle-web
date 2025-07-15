@@ -31,8 +31,18 @@ export const useGameStore = defineStore('game', {
   getters: {
     // Check if current puzzle is solved
     isSolved: (state) => {
-      if (!state.board.length || !state.solution.length) return false
-      return JSON.stringify(state.board) === JSON.stringify(state.solution)
+      if (!state.board.length) return false
+      
+      const size = state.puzzleSize
+      const totalPieces = size * size
+      
+      // Check if pieces are in correct order (1 to 8, then 0)
+      for (let i = 0; i < totalPieces - 1; i++) {
+        if (state.board[i] !== i + 1) return false
+      }
+      
+      // Check if empty space (0) is at the end
+      return state.board[totalPieces - 1] === 0
     },
     
     // Get elapsed time in seconds
@@ -132,8 +142,8 @@ export const useGameStore = defineStore('game', {
         const size = this.puzzleSize
         const totalPieces = size * size
         
-        // Create solved state (0 represents empty space)
-        this.solution = Array.from({ length: totalPieces }, (_, i) => i)
+        // Create solved state (1-8, then 0 for empty space)
+        this.solution = Array.from({ length: totalPieces }, (_, i) => i === totalPieces - 1 ? 0 : i + 1)
         
         // Create initial scrambled state
         this.board = [...this.solution]

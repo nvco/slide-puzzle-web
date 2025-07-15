@@ -77,6 +77,50 @@
         🎯 Ready to Play!
       </button>
     </div>
+
+    <!-- Celebration Overlay -->
+    <div 
+      v-if="showCelebration" 
+      class="celebration-overlay"
+      role="dialog"
+      aria-label="Puzzle solved celebration"
+    >
+      <!-- Confetti Container -->
+      <div class="confetti-container">
+        <div 
+          v-for="i in 50" 
+          :key="i"
+          class="confetti"
+          :style="getConfettiStyle(i)"
+        ></div>
+      </div>
+      
+      <!-- Victory Message -->
+      <div class="victory-message">
+        <div class="victory-icon">🎉</div>
+        <h2 class="victory-title">Puzzle Solved!</h2>
+        <div class="victory-stats">
+          <p>Moves: {{ moves }}</p>
+          <p>Time: {{ formatTime(elapsedTime) }}</p>
+        </div>
+        <div class="victory-actions">
+          <button 
+            @click="playAgain" 
+            class="btn-primary"
+            aria-label="Play another puzzle"
+          >
+            🎮 Play Again
+          </button>
+          <button 
+            @click="newGame" 
+            class="btn-secondary"
+            aria-label="Choose a different image"
+          >
+            🖼️ New Image
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -107,13 +151,43 @@ const isFlipped = ref(false)
 const animating = ref(false)
 const showPreview = ref(true)
 const touchStartIndex = ref(null)
+const showCelebration = ref(false)
 
 // Computed properties
 const moves = computed(() => gameStore.moves)
 const elapsedTime = computed(() => gameStore.elapsedTime)
 const currentImage = computed(() => gameStore.currentPuzzle)
 
+/**
+ * Format time in MM:SS format
+ * @param {number} seconds - Time in seconds
+ * @returns {string} Formatted time string
+ */
+const formatTime = (seconds) => {
+  const minutes = Math.floor(seconds / 60)
+  const remainingSeconds = seconds % 60
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+}
 
+/**
+ * Generate confetti animation styles
+ * @param {number} index - Confetti piece index
+ * @returns {Object} CSS style object
+ */
+const getConfettiStyle = (index) => {
+  const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#F4A460', '#87CEEB']
+  const color = colors[index % colors.length]
+  const left = Math.random() * 100
+  const animationDelay = Math.random() * 3
+  const animationDuration = 2 + Math.random() * 2
+  
+  return {
+    left: `${left}%`,
+    backgroundColor: color,
+    animationDelay: `${animationDelay}s`,
+    animationDuration: `${animationDuration}s`
+  }
+}
 
 // Throttled piece movement to prevent rapid clicking
 const throttledMovePiece = throttle((index) => {
@@ -126,11 +200,6 @@ const throttledMovePiece = throttle((index) => {
         animating.value = true
         setTimeout(() => {
           animating.value = false
-          
-          // Check for win condition
-          if (gameStore.isSolved) {
-            celebrateWin()
-          }
         }, ANIMATION_DURATIONS.PIECE_MOVE)
       }
       return moved
@@ -199,6 +268,7 @@ const startGame = async () => {
 const resetPuzzle = () => {
   gameStore.resetPuzzle()
   animating.value = false
+  showCelebration.value = false
 }
 
 // Start new game
@@ -206,17 +276,27 @@ const newGame = () => {
   gameStore.startNewGame()
   isFlipped.value = false
   showPreview.value = true
+  showCelebration.value = false
+}
+
+// Play again with same image
+const playAgain = () => {
+  showCelebration.value = false
+  resetPuzzle()
 }
 
 // Celebrate win
 const celebrateWin = () => {
   console.log('🎉 Puzzle solved!')
-  // TODO: Add celebration animation
+  console.log('🎉 Setting showCelebration to true')
+  showCelebration.value = true
+  console.log('🎉 showCelebration is now:', showCelebration.value)
 }
 
 // Watch for game state changes
 watch(gameState, (newState) => {
-  if (newState === 'won') {
+  if (newState === 'won' && !showCelebration.value) {
+    console.log('🎉 Game state changed to won, triggering celebration')
     setTimeout(() => {
       celebrateWin()
     }, ANIMATION_DURATIONS.VICTORY_DELAY)
@@ -335,7 +415,98 @@ onUnmounted(() => {
   .piece-number {
     @apply text-2xl;
   }
-  
-
 }
+
+/* Celebration Overlay */
+.celebration-overlay {
+  @apply fixed inset-0 z-50;
+  @apply flex items-center justify-center;
+  @apply bg-black bg-opacity-50 backdrop-blur-sm;
+  animation: fade-in 0.5s ease-out;
+}
+
+/* Confetti Animation */
+.confetti-container {
+  @apply absolute inset-0 pointer-events-none;
+  @apply overflow-hidden;
+}
+
+.confetti {
+  @apply absolute w-2 h-2 rounded-sm;
+  @apply opacity-80;
+  animation: confetti-fall 3s linear infinite;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Victory Message */
+.victory-message {
+  @apply bg-white rounded-2xl shadow-2xl;
+  @apply p-8 max-w-md mx-4;
+  @apply text-center;
+  @apply border-4 border-puzzle-accent;
+  animation: bounce-in 0.6s ease-out;
+}
+
+.victory-icon {
+  @apply text-6xl mb-4;
+  @apply animate-bounce;
+}
+
+.victory-title {
+  @apply text-3xl font-bold text-gray-800 mb-4;
+  @apply md:text-4xl;
+}
+
+.victory-stats {
+  @apply space-y-2 mb-6;
+  @apply text-lg text-gray-600;
+}
+
+.victory-stats p {
+  @apply font-semibold;
+}
+
+.victory-actions {
+  @apply flex flex-col space-y-3;
+  @apply sm:flex-row sm:space-y-0 sm:space-x-4;
+}
+
+/* Animation Keyframes */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
 </style> 
