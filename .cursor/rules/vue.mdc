@@ -1,0 +1,134 @@
+---
+description: "Vue.js best practices, patterns, and framework-specific guidelines"
+globs: ["**/*.{vue,js,ts}"]
+alwaysApply: false
+---
+
+# Vue.js Rules
+
+## File Size and Component Organization
+- **Keep Vue files manageable**: Single File Components should stay under 300 lines total (template + script + style)
+- **Extract large templates**: If template section exceeds 100 lines, break into smaller sub-components
+- **Split complex logic**: Move large composition functions into separate composables
+- **One component per file**: Avoid defining multiple components in a single .vue file
+- **Extract computed logic**: Move complex computed properties into separate composable functions
+- **Separate concerns within components**: Keep template, script, and style sections focused and minimal
+- **Use composables for reusability**: Extract any logic used by multiple components into composables
+- **Break down large forms**: Split complex forms into smaller, focused sub-components
+
+## Component Architecture
+- Prefer Composition API over Options API for new components - better TypeScript support and logic reuse
+- Use single-file components (.vue files) for better organization and tooling support
+- Keep components small and focused on a single responsibility
+- Use PascalCase for component names in both files and templates
+- Use meaningful component names that describe what they do, not how they look
+- Prefer composition over inheritance for component relationships
+- Use slots for flexible component composition instead of multiple conditional renders
+
+## Composition API Patterns
+- Use ref() for primitive values, reactive() for objects and arrays
+- Group related reactive state and logic into composables for reusability
+- Use computed() for derived state that depends on reactive data
+- Prefer readonly() when exposing reactive state from composables to prevent mutations
+- Use toRefs() when destructuring reactive objects to maintain reactivity
+- Use unref() or .value carefully - understand when you need reactive vs plain values
+- Name composables with "use" prefix (useCounter, useApi, useLocalStorage)
+
+## Template Best Practices
+- Use v-show for elements that toggle frequently, v-if for conditional rendering
+- Always use :key with v-for loops - prefer unique IDs over array indices
+- Use v-for with v-if on different elements, not the same element
+- Use kebab-case for prop names in templates, camelCase in script
+- Prefer explicit event names over generic ones (submit-form vs click)
+- Use v-model sparingly - prefer explicit :value and @input for complex forms
+- Use template refs (ref="elementName") instead of document.querySelector
+
+## Props and Events
+- Use TypeScript interfaces or PropType for prop validation
+- Make props as specific as possible - avoid generic Object or Array types
+- Use default values for optional props appropriately
+- Emit specific events with descriptive names (user-selected, data-updated)
+- Use object syntax for emits to document event payloads
+- Prefer fewer, more meaningful props over many simple props
+- Use provide/inject for deeply nested prop passing, not prop drilling
+
+## Reactivity and Performance
+- Use computed() for expensive calculations that depend on reactive data
+- Use watchEffect() for side effects, watch() for specific reactive dependencies
+- Avoid creating reactive data inside computed functions
+- Use shallowRef() and shallowReactive() for performance when deep reactivity isn't needed
+- Use markRaw() for non-reactive objects like external library instances
+- Avoid unnecessary watchers - prefer computed values when possible
+- Use nextTick() when you need to wait for DOM updates after reactive changes
+
+## State Management
+- Use Pinia for global state management instead of Vuex
+- Keep store state minimal - derive values with getters when possible
+- Use actions for async operations and mutations
+- Structure stores by feature or domain, not by data type
+- Use composables for component-level state that doesn't need global access
+- Avoid deeply nested state structures - keep state flat when possible
+- Use store subscriptions sparingly and clean them up properly
+
+## Lifecycle and Cleanup
+- Use onMounted() for DOM-dependent initialization
+- Use onUnmounted() for cleanup (timers, event listeners, subscriptions)
+- Prefer onBeforeMount() over created() in Composition API
+- Use watchStopper functions to clean up watchers when needed
+- Clean up async operations in onUnmounted() to prevent memory leaks
+- Use onActivated()/onDeactivated() for keep-alive component logic
+- Avoid heavy operations in setup() - move them to appropriate lifecycle hooks
+
+## Composables and Reusability
+- Extract reusable logic into composables rather than mixins
+- Make composables pure functions that return reactive state and methods
+- Use consistent naming patterns for composable return values
+- Document composables with clear examples and TypeScript types
+- Avoid side effects in composable setup - let components control when effects run
+- Use dependency injection pattern for composables that need external dependencies
+- Test composables independently from components
+
+## Template Performance
+- Use v-once for static content that never changes
+- Use v-memo for expensive list items that rarely change
+- Avoid complex expressions in templates - use computed properties instead
+- Use functional components for simple presentational components
+- Prefer v-show over v-if for elements that toggle frequently
+- Use key attribute strategically to control component reuse vs recreation
+- Avoid inline object/array creation in templates
+
+## Vue Router Patterns
+- Use named routes instead of path strings for navigation
+- Use route params for required data, query params for optional filters
+- Implement proper route guards for authentication and authorization
+- Use lazy loading for route components to improve initial bundle size
+- Handle route errors and loading states appropriately
+- Use meta fields for route-specific data like page titles or permissions
+- Prefer programmatic navigation over template navigation for complex logic
+
+## Forms and Input Handling
+- Use v-model modifiers (.trim, .number, .lazy) appropriately
+- Create custom input components with proper v-model support
+- Use form validation libraries that work well with Vue's reactivity
+- Handle form submission with prevent modifiers (@submit.prevent)
+- Use computed setters for complex v-model scenarios
+- Validate input on both client and server sides
+- Provide clear feedback for form validation errors
+
+## Testing Considerations
+- Write components that are easy to test by avoiding global dependencies
+- Use dependency injection for services and external dependencies
+- Test composables separately from components when possible
+- Use Vue Testing Library patterns for component testing
+- Mock external dependencies appropriately in tests
+- Test user interactions, not implementation details
+- Use meaningful test descriptions that explain expected behavior
+
+## TypeScript Integration
+- Use TypeScript with Vue for better development experience and error catching
+- Define proper types for props, emits, and composable return values
+- Use generic components when appropriate for reusability
+- Leverage Vue's built-in TypeScript support for template type checking
+- Use defineComponent() for better TypeScript inference in Options API
+- Type store state and actions properly when using Pinia
+- Use interface definitions for complex prop and event types

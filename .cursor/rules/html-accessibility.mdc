@@ -1,0 +1,35 @@
+---
+description: "HTML accessibility best practices and semantic markup guidelines"
+globs: ["**/*.{html,jsx,tsx,vue,svelte,astro,mdx}"]
+alwaysApply: false
+---
+
+# HTML Accessibility Rules
+
+## Semantic HTML Structure
+- Always use semantic HTML elements over generic divs and spans when appropriate
+- Use proper heading hierarchy (h1, h2, h3, h4, h5, h6) - don't skip levels
+- Use button elements for interactive actions, not divs with click handlers
+- Use anchor tags (a) for navigation, not buttons or divs
+- Use form elements (input, textarea, select) for data collection
+- Use lists (ul, ol, dl) for grouped content
+- Use main, nav, header, footer, section, article, aside for page structure
+
+## Interactive Elements
+- Ensure all interactive elements are focusable and keyboard accessible
+- Use proper button vs anchor element distinction (buttons for actions, links for navigation)
+- Provide clear focus indicators for keyboard users
+- Ensure click targets are accessible via keyboard (Enter/Space for buttons)
+- Use proper form labels associated with inputs (for attribute or wrapping label)
+
+## ARIA Attributes and Labels
+- Use aria-label or aria-labelledby for elements that need accessible names
+- Use aria-describedby to associate help text or error messages with form controls
+- Use aria-expanded for collapsible content (dropdowns, accordions)
+- Use aria-hidden="true" for decorative icons that add no meaning
+- Use aria-live regions for dynamic content updates
+- Use role attributes when semantic HTML isn't sufficient
+- Use aria-current for indicating current page/step in navigation
+
+## Form Accessibility
+- Associate all

@@ -56,10 +56,18 @@
         </div>
         
         <div class="space-y-4">
-          <button @click="playAgain" class="btn-primary mr-4">
+          <button 
+            @click="playAgain" 
+            class="btn-primary mr-4"
+            aria-label="Play the same puzzle again"
+          >
             🎮 Play Again
           </button>
-          <button @click="newPuzzle" class="btn-secondary">
+          <button 
+            @click="newPuzzle" 
+            class="btn-secondary"
+            aria-label="Choose a new puzzle"
+          >
             🎯 New Puzzle
           </button>
         </div>

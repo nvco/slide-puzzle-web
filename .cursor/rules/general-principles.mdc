@@ -1,0 +1,106 @@
+---
+description: "Universal development principles and code modification guidelines for all programming tasks"
+globs: ["**/*.{js,ts,jsx,tsx,vue,html,css,scss,sass,less,md,json}"]
+alwaysApply: true
+---
+
+# General Development Principles
+
+## Core Development Principles
+
+### 1. Simplicity
+- Write simple and straightforward code that accomplishes the task effectively
+- Choose the most direct solution over complex abstractions when possible
+- Avoid over-engineering - implement what is needed, not what might be needed
+- Prefer clear, obvious implementations over clever or obscure ones
+
+### 2. Readability
+- Ensure your code is easy to read and understand by other developers
+- Use descriptive names for variables, functions, and classes that explain their purpose
+- Structure code with proper indentation, spacing, and logical organization
+- Write code that tells a clear story of what it does and why
+
+### 3. Performance
+- Keep performance considerations in mind during development
+- Do not over-optimize at the cost of readability and maintainability
+- Profile and measure before optimizing - avoid premature optimization
+- Focus on algorithmic efficiency over micro-optimizations
+
+### 4. Maintainability
+- Write code that is easy to maintain, update, and extend over time
+- Use consistent patterns and conventions throughout the codebase
+- Structure code to minimize the impact of future changes
+- Document complex logic and business rules clearly
+
+### 5. Testability
+- Ensure your code is easy to test with unit tests and integration tests
+- Write functions and components that can be tested in isolation
+- Avoid hard dependencies and global state that make testing difficult
+- Structure code to allow for easy mocking and stubbing of dependencies
+
+### 6. Reusability
+- Write reusable components, functions, and modules when appropriate
+- Create abstractions that can be used across different parts of the application
+- Design interfaces that are flexible and can accommodate different use cases
+- Balance reusability with simplicity - don't over-abstract
+
+### 7. Correct and DRY Code
+- Focus on writing correct code that follows established best practices
+- Follow the DRY (Don't Repeat Yourself) principle - avoid code duplication
+- Ensure code handles edge cases and error conditions appropriately
+- Use established patterns and conventions for the language and framework
+
+### 8. Function and Code Documentation
+- Add a comment at the start of each function describing what it does
+- Document the purpose, parameters, return values, and any side effects
+- Explain complex algorithms, business logic, or non-obvious implementations
+- Keep comments up-to-date with code changes
+
+## Code Modification Guidelines
+
+### Surgical Code Changes
+- **Only modify sections of the code related to the task at hand**
+- **Avoid modifying unrelated pieces of code** unless specifically required
+- **Avoid changing existing comments** unless they are incorrect or outdated
+- **Avoid any kind of cleanup unless specifically instructed to do so**
+- **Accomplish the goal with the minimum amount of code changes necessary**
+
+### Change Management Best Practices
+- Focus changes on the specific feature or bug being addressed
+- Preserve existing functionality unless explicitly asked to change it
+- Maintain the existing code style and patterns unless they conflict with requirements
+- Test that changes don't break existing functionality
+- Make changes that are easy to review and understand
+
+### When Making Changes
+- Understand the existing code before making modifications
+- Respect the current architecture and design patterns
+- Add new code that fits naturally with the existing codebase
+- Avoid refactoring unless it's necessary for the current task
+- Document any significant changes or new functionality
+
+## Code Quality Standards
+
+### Consistency
+- Follow the established coding standards and conventions in the project
+- Use the same patterns and approaches as the existing codebase
+- Maintain consistent naming conventions, formatting, and structure
+- Align with team coding standards and style guides
+
+### Error Handling
+- Implement proper error handling for all failure scenarios
+- Provide meaningful error messages that help with debugging
+- Handle edge cases and unexpected inputs gracefully
+- Use appropriate error handling patterns for the language and framework
+
+### Security Considerations
+- Validate and sanitize all user inputs
+- Follow security best practices for the language and framework
+- Avoid common security vulnerabilities (injection, XSS, etc.)
+- Use secure coding practices for authentication and authorization
+
+### Code Review Readiness
+- Write code that is easy to review and understand
+- Make changes that are focused and have a clear purpose
+- Provide clear commit messages that explain the changes
+- Ensure code passes all tests and quality checks before review

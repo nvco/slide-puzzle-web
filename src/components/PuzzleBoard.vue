@@ -1,5 +1,10 @@
 <template>
   <div class="puzzle-container">
+    <!-- Screen reader instruction -->
+    <div id="moveable-piece-instruction" class="sr-only">
+      Press Enter or Space to move this piece
+    </div>
+    
     <!-- Puzzle Board -->
     <div 
       class="puzzle-board-wrapper flip-3d"
@@ -27,45 +32,61 @@
         <div 
           class="puzzle-board game-board"
           :class="`grid-${puzzleSize}x${puzzleSize}`"
+          role="grid"
+          :aria-label="`${puzzleSize}x${puzzleSize} puzzle board`"
         >
-                     <div
-             v-for="(piece, index) in gamePieces"
-             :key="`game-${index}`"
-             class="puzzle-piece game-piece"
-             :class="{ 
-               'empty': piece === 0,
-               'moveable': isMoveable(index),
-               'animating': animating 
-             }"
-             :style="getPieceStyle(piece, index)"
-             @click="movePiece(index)"
-             @touchstart="handleTouchStart(index)"
-             @touchend="handleTouchEnd(index)"
-           >
-             <div v-if="piece !== 0" class="piece-number">{{ piece }}</div>
-           </div>
+                               <div
+            v-for="(piece, index) in gamePieces"
+            :key="`game-${index}`"
+            class="puzzle-piece game-piece"
+            :class="{ 
+              'empty': piece === 0,
+              'moveable': isMoveable(index),
+              'animating': animating 
+            }"
+            :style="getPieceStyle(piece, index)"
+            :aria-label="piece === 0 ? 'Empty space' : `Move puzzle piece ${piece}`"
+            :aria-describedby="isMoveable(index) ? 'moveable-piece-instruction' : undefined"
+            role="button"
+            tabindex="0"
+            @click="movePiece(index)"
+            @touchstart="handleTouchStart(index)"
+            @touchend="handleTouchEnd(index)"
+            @keydown.enter="movePiece(index)"
+            @keydown.space.prevent="movePiece(index)"
+          >
+            <div v-if="piece !== 0" class="piece-number">{{ piece }}</div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Game Controls -->
-    <div class="game-controls" v-if="!showPreview">
-      <div class="game-stats">
+    <div class="game-controls" v-if="!showPreview" role="region" aria-label="Game statistics and controls">
+      <div class="game-stats" role="group" aria-label="Game statistics">
         <div class="stat-item">
-          <span class="stat-label">Moves:</span>
-          <span class="stat-value">{{ moves }}</span>
+          <span class="stat-label" id="moves-label">Moves:</span>
+          <span class="stat-value" aria-labelledby="moves-label">{{ moves }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">Time:</span>
-          <span class="stat-value">{{ formatTime(elapsedTime) }}</span>
+          <span class="stat-label" id="time-label">Time:</span>
+          <span class="stat-value" aria-labelledby="time-label">{{ formatTime(elapsedTime) }}</span>
         </div>
       </div>
       
       <div class="action-buttons">
-        <button @click="resetPuzzle" class="btn-secondary">
+        <button 
+          @click="resetPuzzle" 
+          class="btn-secondary"
+          aria-label="Reset current puzzle"
+        >
           🔄 Reset
         </button>
-        <button @click="newGame" class="btn-primary">
+        <button 
+          @click="newGame" 
+          class="btn-primary"
+          aria-label="Start a new puzzle game"
+        >
           🎮 New Game
         </button>
       </div>
@@ -73,7 +94,11 @@
 
     <!-- Ready to Play Button -->
     <div class="ready-controls" v-if="showPreview">
-      <button @click="startGame" class="btn-primary ready-btn">
+      <button 
+        @click="startGame" 
+        class="btn-primary ready-btn"
+        aria-label="Start the puzzle game"
+      >
         🎯 Ready to Play!
       </button>
     </div>
@@ -279,25 +304,33 @@ onMounted(() => {
   @apply relative rounded-lg border-2 border-gray-300 overflow-hidden;
   @apply transition-all duration-300 ease-out;
   @apply flex items-center justify-center;
-  cursor: pointer;
+  @apply min-w-11 min-h-11; /* Ensure 44px minimum touch target */
+  @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+  @apply active:scale-95;
 }
 
 .puzzle-piece.empty {
-  @apply opacity-0 pointer-events-none;
+  @apply opacity-0 pointer-events-none cursor-default;
 }
 
 .puzzle-piece.moveable {
-  @apply border-puzzle-accent shadow-lg;
+  @apply border-puzzle-accent shadow-lg cursor-grab;
   @apply hover:scale-105 hover:shadow-xl;
+  @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+}
+
+.puzzle-piece.moveable:active {
+  @apply cursor-grabbing;
 }
 
 .puzzle-piece.animating {
-  @apply transition-transform duration-300 ease-out;
+  @apply transition-transform duration-300 ease-out cursor-wait;
 }
 
 .puzzle-piece.solved-piece {
   @apply border-gray-400 cursor-default;
   @apply hover:scale-100 hover:shadow-md;
+  @apply focus:ring-2 focus:ring-gray-400 focus:outline-none;
 }
 
 .piece-number {
@@ -344,6 +377,10 @@ onMounted(() => {
   .puzzle-board-wrapper {
     width: 280px;
     height: 280px;
+  }
+  
+  .puzzle-piece {
+    @apply min-w-12 min-h-12; /* Ensure larger touch targets on mobile */
   }
   
   .piece-number {

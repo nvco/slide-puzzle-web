@@ -1,0 +1,85 @@
+---
+description: "Tailwind CSS best practices and conventions for utility-first development"
+globs: ["**/*.{js,ts,jsx,tsx,html,vue,svelte,astro,mdx}"]
+alwaysApply: false
+---
+
+# Tailwind CSS Rules
+
+## Core Principles
+- Always use utility-first approach - build components by combining small, single-purpose utility classes
+- Follow mobile-first responsive design - start with base styles, then add responsive prefixes (md:, lg:, xl:)
+- Prefer Tailwind utilities over custom CSS whenever possible
+- Use semantic class grouping - group related utilities logically in class lists
+- Avoid arbitrary values unless absolutely necessary - stick to design system values
+
+## Responsive Design
+- Start with mobile styles (no prefix), then enhance for larger screens using md:, lg:, xl:, 2xl:
+- Use responsive prefixes for layout changes, typography scaling, and spacing adjustments
+- Apply responsive utilities to every screen size consideration
+- Remember Tailwind uses min-width media queries (mobile-first)
+
+## Layout & Spacing
+- Use consistent spacing scale values: 4, 6, 8, 12, 16, 24 for major spacing
+- Prefer space-y-* and space-x-* utilities for consistent gaps between elements
+- Use container mx-auto pattern for centered layouts
+- Apply max-width constraints to text content for readability (max-w-prose, max-w-2xl)
+- Use flex and grid utilities for modern layouts
+
+## Interactive States
+- Always include hover states for interactive elements, but remember hover doesn't exist on touch devices
+- Use focus states for accessibility (focus:ring-2, focus:outline-none) 
+- Combine states when needed (hover:bg-blue-600 focus:bg-blue-600)
+- Apply appropriate cursor utilities (cursor-pointer, cursor-not-allowed, cursor-wait) - note these only affect desktop/mouse users
+- Use group utilities for parent-child hover interactions
+- Consider touch-friendly sizing: minimum 44px (touch-44) for tap targets on mobile
+- Use active states (active:bg-blue-700) for immediate feedback on touch devices
+- Avoid hover-only interactions - ensure touch users can access all functionality
+
+## Colors & Design System
+- Stick to defined color scales (blue-500, gray-200, etc.) rather than arbitrary colors
+- Use semantic color choices (green for success, red for errors, blue for primary actions)
+- Apply opacity using slash syntax (bg-black/50, text-white/80) instead of separate opacity utilities
+- Maintain consistent color usage across similar elements
+
+## Typography
+- Use responsive text sizing (text-lg md:text-xl lg:text-2xl)
+- Apply appropriate line heights (leading-relaxed for body text, leading-tight for headings)
+- Use font weight meaningfully (font-semibold for emphasis, font-bold for strong hierarchy)
+- Ensure proper text color contrast for accessibility
+
+## Component Patterns
+- Extract repeated utility combinations into components when you use the same pattern 3+ times
+- Use @apply directive sparingly - only for complex repeated patterns
+- Prefer composition over extraction when possible
+- Name component classes semantically (btn-primary, card-elevated)
+
+## Performance & Optimization
+- Only include utilities that are actually used in your markup
+- Use JIT mode for optimal bundle size
+- Avoid deeply nested arbitrary values
+- Prefer standard utilities over custom CSS properties
+- Reference Tailwind documentation for component patterns rather than reinventing common solutions
+
+## Accessibility (CSS-focused)
+- Always include focus states and proper focus management - use focus:ring-2 focus:ring-blue-500 focus:outline-none
+- Ensure sufficient color contrast ratios - avoid light text on light backgrounds
+- Include sr-only utilities for screen reader content when needed (sr-only class)
+- Ensure touch targets are minimum 44px (w-11 h-11 or larger) for mobile accessibility
+- Avoid hover-dependent functionality that excludes touch users
+- Provide visual focus indicators that are clearly visible (avoid focus:outline-none without replacement)
+- Ensure interactive elements have proper contrast in all states (hover, focus, active, disabled)
+- Use text-* utilities to maintain readable font sizes (minimum 16px/text-base on mobile)
+- Avoid using color alone to convey information - combine with icons, text, or patterns
+
+## Custom CSS with Tailwind
+- **When to write custom CSS**: Only when Tailwind utilities cannot achieve the desired result
+- **Use @layer directive**: Organize custom CSS into @layer base, @layer components, @layer utilities
+- **Prefer Tailwind patterns**: Follow Tailwind's design token system even in custom CSS
+- **Use @apply sparingly**: Only for complex repeated utility combinations, not simple ones
+- **CSS custom properties**: Use CSS variables for theme variations rather than complex overrides
+- **Component-scoped styles**: Keep component-specific CSS close to the component when possible
+- **File organization**: Keep custom CSS files small and focused (under 300 lines per file)
+- **Modular structure**: Separate custom CSS into logical modules (components, base, utilities)
+- **Naming conventions**: Use descriptive class names that explain purpose, not appearance
+- **Performance**: Minimize custom CSS file sizes and remove unused styles regularly

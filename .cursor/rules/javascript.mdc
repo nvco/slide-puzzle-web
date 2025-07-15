@@ -1,0 +1,114 @@
+---
+description: "JavaScript best practices, modern patterns, and development guidelines"
+globs: ["**/*.{js,jsx,ts,tsx,mjs,cjs}"]
+alwaysApply: false
+---
+
+# JavaScript Rules
+
+## Modern JavaScript Syntax
+- Use ES6+ features: const/let instead of var, arrow functions, destructuring, template literals
+- Prefer const for variables that don't change, let for variables that do
+- Use arrow functions for short functions and callbacks, regular functions for methods and constructors
+- Use destructuring assignment for objects and arrays when it improves readability
+- Use template literals for string interpolation instead of concatenation
+- Use optional chaining (?.) and nullish coalescing (??) for safer property access
+
+## Functions and Code Organization
+- Write pure functions when possible - same input always produces same output, no side effects
+- Keep functions small and focused on a single responsibility
+- Use descriptive function and variable names that explain intent
+- Prefer early returns to reduce nesting and improve readability
+- Use default parameters instead of checking for undefined values
+- Avoid deeply nested callbacks - use async/await or promises instead
+
+## Asynchronous JavaScript
+- Use async/await instead of promise chains for better readability
+- Always handle errors in async functions with try/catch blocks
+- Use Promise.all() for concurrent operations that don't depend on each other
+- Use Promise.allSettled() when you need results from all promises regardless of failures
+- Avoid mixing async/await with .then() chains in the same function
+- Use proper error handling for network requests and API calls
+
+## Error Handling
+- Use try/catch blocks for error-prone operations
+- Create meaningful error messages that help with debugging
+- Use custom error classes for different types of errors
+- Handle errors at the appropriate level - don't let them bubble up unnecessarily
+- Log errors appropriately for debugging while avoiding sensitive data exposure
+- Provide fallback behavior when operations fail
+
+## Performance and Optimization
+- Avoid unnecessary re-renders and computations
+- Use debouncing for expensive operations triggered by user input
+- Prefer modern array methods (map, filter, reduce) over traditional loops when appropriate
+- Use object and array destructuring to minimize property access
+- Avoid creating functions inside render loops or frequent callbacks
+- Use memoization for expensive calculations that repeat with same inputs
+
+## DOM Manipulation and Events
+- Use modern DOM methods (querySelector, querySelectorAll) over older methods
+- Add event listeners properly and clean them up to prevent memory leaks
+- Use event delegation for dynamic content instead of attaching many individual listeners
+- Debounce scroll, resize, and input events to improve performance
+- Use passive event listeners for scroll and touch events when possible
+- Prefer data attributes over classes for storing element-specific data
+
+## Data Handling
+- Use immutable data patterns - don't mutate original objects/arrays
+- Use spread operator or Object.assign() for shallow copying
+- Use proper deep cloning when needed (structuredClone or library methods)
+- Validate data types and structure, especially from external sources
+- Use consistent data transformation patterns throughout the application
+- Handle null, undefined, and empty values explicitly
+
+## File Size and Code Organization
+- **Keep files manageable**: Aim for under 300 lines of code per file - anything above makes maintenance harder
+- **Split large files**: Break code into modules rather than having files longer than 100-200 lines
+- **Single Responsibility Principle**: Each module should have only one reason to change - one responsibility
+- **Separation of Concerns**: Separate different functionalities into distinct modules (API calls, validation, UI logic)
+- **Extract reusable logic**: Move repeated patterns into separate utility modules
+- **Avoid "God files"**: Don't put all utilities, API calls, validation, and business logic in one massive file
+- **Use meaningful file names**: Files should clearly indicate their single purpose
+- **Group related functions**: Put functions that change for the same reasons together
+
+## Code Quality and Maintainability
+- Use consistent naming conventions (camelCase for variables, PascalCase for constructors)
+- Write self-documenting code that explains the "why" not just the "what"
+- Use JSDoc comments for complex functions and public APIs
+- Avoid magic numbers and strings - use named constants
+- Use meaningful variable names even for short-lived variables
+- Group related functionality into modules or classes
+- **Keep functions small**: Aim for methods no more than 10 lines for better readability and reduced complexity
+
+## Browser Compatibility and Standards
+- Use feature detection instead of browser detection when needed
+- Understand which ES6+ features need polyfills for your target browsers
+- Use progressive enhancement - ensure basic functionality works without JavaScript
+- Test across different browsers and devices, especially mobile
+- Use standard Web APIs when available instead of third-party libraries
+- Be mindful of bundle size and only include necessary polyfills
+
+## Security Considerations
+- Sanitize user input and validate data on both client and server
+- Use textContent instead of innerHTML when inserting user-generated content
+- Be cautious with eval() and avoid it when possible
+- Use HTTPS for all network requests in production
+- Don't store sensitive data in localStorage or expose it in client-side code
+- Validate and sanitize data before sending to APIs
+
+## Testing and Debugging
+- Write testable code by avoiding global dependencies and side effects
+- Use descriptive test names that explain the expected behavior
+- Mock external dependencies in tests to ensure isolation
+- Use browser developer tools effectively for debugging
+- Add meaningful console logs for development but remove or gate them for production
+- Use proper error boundaries and fallbacks for production applications
+
+## Framework-Agnostic Patterns
+- Separate business logic from UI logic
+- Use dependency injection or similar patterns for testing
+- Implement proper state management patterns
+- Use observer pattern for loose coupling between components
+- Implement proper cleanup for subscriptions and timers
+- Use factory functions or classes for creating similar objects

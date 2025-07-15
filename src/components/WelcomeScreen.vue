@@ -49,7 +49,11 @@
       </div>
 
       <!-- Start Button -->
-      <button @click="startGame" class="start-button">
+      <button 
+        @click="startGame" 
+        class="start-button"
+        aria-label="Start the slide puzzle game"
+      >
         ✨ Let's Play! ✨
       </button>
     </div>

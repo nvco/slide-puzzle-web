@@ -1,12 +1,17 @@
 <template>
   <div class="image-gallery-container">
+    <!-- Screen reader instruction -->
+    <div id="selected-image-instruction" class="sr-only">
+      This image is selected. Press Enter or Space to start puzzle with this image.
+    </div>
+    
     <div class="gallery-header">
       <h2 class="gallery-title">Choose Your Puzzle! 🧩</h2>
       <p class="gallery-subtitle">Start with numbers to test the mechanics!</p>
     </div>
 
     <!-- Category Tabs -->
-    <div class="category-tabs">
+    <div class="category-tabs" role="tablist" aria-label="Puzzle categories">
       <button
         v-for="category in categories"
         :key="category"
@@ -15,19 +20,28 @@
           'category-tab',
           { 'active': selectedCategory === category }
         ]"
+        :aria-label="`Select ${formatCategoryName(category)} category`"
+        :aria-selected="selectedCategory === category"
+        role="tab"
       >
         {{ getCategoryEmoji(category) }} {{ formatCategoryName(category) }}
       </button>
     </div>
 
     <!-- Image Grid -->
-    <div class="image-grid">
+    <div class="image-grid" role="grid" aria-label="Available puzzle images">
       <div
         v-for="image in filteredImages"
         :key="image.id"
         class="image-item"
         @click="selectImage(image)"
         :class="{ 'selected': selectedImage?.id === image.id }"
+        :aria-label="`Select ${image.alt} puzzle`"
+        :aria-describedby="selectedImage?.id === image.id ? 'selected-image-instruction' : undefined"
+        role="gridcell"
+        tabindex="0"
+        @keydown.enter="selectImage(image)"
+        @keydown.space.prevent="selectImage(image)"
       >
         <div class="image-wrapper">
           <img
@@ -49,7 +63,11 @@
 
     <!-- Number Puzzle Button -->
     <div class="number-puzzle-section">
-      <button @click="createNumberPuzzle" class="btn-primary number-btn">
+      <button 
+        @click="createNumberPuzzle" 
+        class="btn-primary number-btn"
+        aria-label="Create a number puzzle to test the sliding mechanics"
+      >
         🔢 Create Number Puzzle
       </button>
       <p class="number-hint">Test the sliding mechanics with colorful numbers</p>
@@ -57,7 +75,11 @@
 
     <!-- Random Selection Button -->
     <div class="random-selection">
-      <button @click="selectRandomImage" class="btn-primary random-btn">
+      <button 
+        @click="selectRandomImage" 
+        class="btn-primary random-btn"
+        aria-label="Let us pick a random puzzle image for you"
+      >
         🎲 Surprise Me!
       </button>
       <p class="random-hint">Let us pick a fun image for you</p>
@@ -231,11 +253,15 @@ onMounted(() => {
   @apply text-sm font-medium text-gray-700;
   @apply transition-all duration-200 ease-in-out;
   @apply hover:border-puzzle-accent hover:bg-puzzle-accent hover:text-white;
+  @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+  @apply active:bg-puzzle-accent active:text-white;
+  @apply min-w-11 min-h-11; /* Ensure 44px minimum touch target */
 }
 
 .category-tab.active {
   @apply border-puzzle-primary bg-puzzle-primary text-white;
   @apply shadow-lg;
+  @apply focus:ring-2 focus:ring-white focus:outline-none;
 }
 
 .image-grid {
@@ -247,11 +273,15 @@ onMounted(() => {
   @apply relative cursor-pointer rounded-lg overflow-hidden;
   @apply transition-all duration-300 ease-out;
   @apply hover:scale-105 hover:shadow-xl;
+  @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+  @apply active:scale-95;
+  @apply min-w-11 min-h-11; /* Ensure 44px minimum touch target */
 }
 
 .image-item.selected {
   @apply ring-4 ring-puzzle-accent ring-opacity-75;
   @apply scale-105 shadow-2xl;
+  @apply focus:ring-4 focus:ring-puzzle-accent focus:outline-none;
 }
 
 .image-wrapper {
@@ -347,16 +377,20 @@ onMounted(() => {
     @apply grid-cols-2 gap-3;
   }
   
+  .image-item {
+    @apply min-w-12 min-h-12; /* Ensure larger touch targets on mobile */
+  }
+  
+  .category-tab {
+    @apply text-xs px-3 py-1 min-w-12 min-h-12; /* Ensure adequate touch targets */
+  }
+  
   .gallery-actions {
     @apply flex-col space-y-2 space-x-0;
   }
   
   .category-tabs {
     @apply gap-1;
-  }
-  
-  .category-tab {
-    @apply text-xs px-3 py-1;
   }
 }
 </style> 

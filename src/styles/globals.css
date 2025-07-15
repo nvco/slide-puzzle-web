@@ -9,6 +9,34 @@
   
   body {
     @apply bg-gradient-to-br from-blue-50 to-purple-50;
+    cursor: default; /* Set default cursor for the entire app */
+  }
+  
+  /* Global focus management for accessibility */
+  *:focus {
+    @apply outline-none;
+  }
+  
+  /* Ensure all interactive elements are focusable */
+  button, 
+  [role="button"],
+  .clickable {
+    cursor: pointer;
+  }
+  
+  /* Disable cursor on non-interactive elements */
+  .non-interactive {
+    cursor: default;
+  }
+  
+  /* Text selection cursor */
+  .selectable-text {
+    cursor: text;
+  }
+  
+  /* Disable cursor during animations */
+  .animating {
+    cursor: wait;
   }
 }
 
@@ -17,6 +45,8 @@
     @apply rounded-lg shadow-md bg-white border-2 border-gray-200;
     @apply transition-all duration-300 ease-out;
     @apply hover:shadow-lg hover:scale-105;
+    @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+    @apply active:scale-95;
   }
   
   .puzzle-piece:active {
@@ -27,12 +57,44 @@
     @apply bg-puzzle-primary hover:bg-red-500 text-white font-bold py-3 px-6 rounded-full;
     @apply transition-all duration-200 ease-in-out;
     @apply shadow-lg hover:shadow-xl;
+    @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+    @apply active:bg-red-600;
+    @apply min-w-11 min-h-11; /* Ensure 44px minimum touch target */
   }
   
   .btn-secondary {
     @apply bg-puzzle-secondary hover:bg-teal-500 text-white font-bold py-3 px-6 rounded-full;
     @apply transition-all duration-200 ease-in-out;
     @apply shadow-lg hover:shadow-xl;
+    @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+    @apply active:bg-teal-600;
+    @apply min-w-11 min-h-11; /* Ensure 44px minimum touch target */
+  }
+  
+  /* Interactive element focus states */
+  .interactive-element {
+    @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+    @apply focus-visible:ring-2 focus-visible:ring-puzzle-accent;
+  }
+  
+  /* Puzzle piece specific states */
+  .puzzle-piece-moveable {
+    @apply cursor-grab;
+    @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+  }
+  
+  .puzzle-piece-moving {
+    @apply cursor-grabbing;
+  }
+  
+  .puzzle-piece-empty {
+    @apply cursor-default;
+    @apply pointer-events-none;
+  }
+  
+  .puzzle-piece-solved {
+    @apply cursor-default;
+    @apply hover:scale-100;
   }
 }
 
@@ -49,5 +111,40 @@
   .flip-back {
     backface-visibility: hidden;
     transform: rotateY(180deg);
+  }
+  
+  /* Custom cursor utilities */
+  .cursor-grab {
+    cursor: grab;
+  }
+  
+  .cursor-grabbing {
+    cursor: grabbing;
+  }
+  
+  .cursor-wait {
+    cursor: wait;
+  }
+  
+  .cursor-not-allowed {
+    cursor: not-allowed;
+  }
+  
+  .cursor-help {
+    cursor: help;
+  }
+  
+  /* Touch target utilities */
+  .touch-target {
+    @apply min-w-11 min-h-11; /* 44px minimum for touch accessibility */
+  }
+  
+  /* Focus utilities */
+  .focus-ring {
+    @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+  }
+  
+  .focus-ring-visible {
+    @apply focus-visible:ring-2 focus-visible:ring-puzzle-accent;
   }
 } 
