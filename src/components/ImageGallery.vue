@@ -110,9 +110,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { formatImageTitle, formatCategoryName } from '@/utils/formatters'
+import { handleAsync, logError, AppError, ERROR_TYPES, ERROR_SEVERITY } from '@/utils/errorHandler'
 import imageManifest from '@/data/images-manifest.json'
 
 const gameStore = useGameStore()
@@ -155,8 +156,20 @@ const getCategoryEmoji = (category) => {
 
 // Image selection
 const selectImage = (image) => {
-  selectedImage.value = image
-  console.log('🎯 Selected image:', image.filename)
+  try {
+    if (!image || !image.id) {
+      throw new AppError(
+        'Invalid image object provided',
+        ERROR_TYPES.VALIDATION,
+        ERROR_SEVERITY.MEDIUM
+      )
+    }
+    
+    selectedImage.value = image
+    console.log('🎯 Selected image:', image.filename)
+  } catch (error) {
+    logError(error, 'selectImage')
+  }
 }
 
 const selectRandomImage = () => {
@@ -171,8 +184,17 @@ const selectRandomImage = () => {
 
 const confirmSelection = () => {
   if (selectedImage.value) {
-    gameStore.selectImage(selectedImage.value)
-    console.log('✨ Puzzle created with:', selectedImage.value.filename)
+    handleAsync(
+      async () => {
+        gameStore.selectImage(selectedImage.value)
+        console.log('✨ Puzzle created with:', selectedImage.value.filename)
+      },
+      'confirmSelection',
+      (error) => {
+        console.error('Failed to create puzzle:', error.message)
+        // Could show user-friendly error message here
+      }
+    )
   }
 }
 
@@ -212,8 +234,23 @@ onMounted(() => {
   
   // Initialize game store if not already done
   if (gameStore.availableImages.length === 0) {
-    gameStore.initializeGame(imageManifest)
+    handleAsync(
+      async () => {
+        gameStore.initializeGame(imageManifest)
+      },
+      'ImageGallery initialization',
+      (error) => {
+        console.error('Failed to initialize ImageGallery:', error.message)
+        loading.value = false
+      }
+    )
   }
+})
+
+onUnmounted(() => {
+  // Cleanup any pending operations
+  loading.value = false
+  console.log('🖼️ ImageGallery unmounted')
 })
 </script>
 

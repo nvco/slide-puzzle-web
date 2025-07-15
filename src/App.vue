@@ -79,6 +79,8 @@
 <script setup>
 import { computed, onMounted, watch } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
+import { trackComponentMount, logPerformanceReport } from '@/utils/performance'
+import { handleAsync, logError } from '@/utils/errorHandler'
 import WelcomeScreen from '@/components/WelcomeScreen.vue'
 import ImageGallery from '@/components/ImageGallery.vue'
 import PuzzleBoard from '@/components/PuzzleBoard.vue'
@@ -126,12 +128,30 @@ watch(showVictory, (isVictory) => {
 
 // Initialize app
 onMounted(() => {
+  const startTime = performance.now()
+  
   console.log('🚀 Slide Puzzle App initialized')
   
   // Initialize game store with image manifest
-  gameStore.initializeGame(imageManifest)
+  handleAsync(
+    async () => {
+      gameStore.initializeGame(imageManifest)
+      
+      // Start with welcome screen
+      gameStore.startWelcome()
+      
+      // Track component mount time
+      trackComponentMount('App', startTime)
+    },
+    'App initialization',
+    (error) => {
+      console.error('Failed to initialize app:', error.message)
+    }
+  )
   
-  // Start with welcome screen
-  gameStore.startWelcome()
+  // Log performance report every 30 seconds in development
+  if (import.meta.env.DEV) {
+    setInterval(logPerformanceReport, 30000)
+  }
 })
 </script> 

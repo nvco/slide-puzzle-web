@@ -81,10 +81,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { ANIMATION_DURATIONS } from '@/utils/constants'
 import { usePuzzleLogic } from '@/composables/usePuzzleLogic'
+import { handleAsync, logError, AppError, ERROR_TYPES, ERROR_SEVERITY } from '@/utils/errorHandler'
+import { throttle } from '@/utils/errorHandler'
 import PuzzlePiece from './PuzzlePiece.vue'
 import GameControls from './GameControls.vue'
 
@@ -113,22 +115,38 @@ const currentImage = computed(() => gameStore.currentPuzzle)
 
 
 
-// Handle piece movement
-const movePiece = (index) => {
+// Throttled piece movement to prevent rapid clicking
+const throttledMovePiece = throttle((index) => {
   if (animating.value || showPreview.value) return
   
-  const moved = gameStore.movePiece(index)
-  if (moved) {
-    animating.value = true
-    setTimeout(() => {
-      animating.value = false
-      
-      // Check for win condition
-      if (gameStore.isSolved) {
-        celebrateWin()
+  handleAsync(
+    async () => {
+      const moved = gameStore.movePiece(index)
+      if (moved) {
+        animating.value = true
+        setTimeout(() => {
+          animating.value = false
+          
+          // Check for win condition
+          if (gameStore.isSolved) {
+            celebrateWin()
+          }
+        }, ANIMATION_DURATIONS.PIECE_MOVE)
       }
-    }, ANIMATION_DURATIONS.PIECE_MOVE)
-  }
+      return moved
+    },
+    'movePiece',
+    (error) => {
+      console.error('Failed to move piece:', error.message)
+      // Reset animation state on error
+      animating.value = false
+    }
+  )
+}, 100)
+
+// Handle piece movement
+const movePiece = (index) => {
+  throttledMovePiece(index)
 }
 
 // Touch handling for mobile
@@ -145,18 +163,36 @@ const handleTouchEnd = (index) => {
 
 // Start the game (flip animation)
 const startGame = async () => {
-  showPreview.value = false
-  
-  // 3D flip animation
-  isFlipped.value = true
-  
-  // Wait for flip animation to complete
-  await new Promise(resolve => setTimeout(resolve, ANIMATION_DURATIONS.FLIP))
-  
-  // Generate and scramble the puzzle
-  gameStore.generatePuzzle()
-  gameStore.gameState = 'playing'
-  gameStore.startTime = Date.now()
+  try {
+    showPreview.value = false
+    
+    // 3D flip animation
+    isFlipped.value = true
+    
+    // Wait for flip animation to complete
+    await new Promise(resolve => setTimeout(resolve, ANIMATION_DURATIONS.FLIP))
+    
+    // Generate and scramble the puzzle
+    await handleAsync(
+      async () => {
+        gameStore.generatePuzzle()
+        gameStore.gameState = 'playing'
+        gameStore.startTime = Date.now()
+      },
+      'startGame',
+      (error) => {
+        console.error('Failed to start game:', error.message)
+        // Reset to preview state on error
+        showPreview.value = true
+        isFlipped.value = false
+      }
+    )
+  } catch (error) {
+    logError(error, 'startGame')
+    // Reset to preview state on error
+    showPreview.value = true
+    isFlipped.value = false
+  }
 }
 
 // Reset current puzzle
@@ -189,6 +225,12 @@ watch(gameState, (newState) => {
 
 onMounted(() => {
   console.log('🧩 PuzzleBoard component mounted')
+})
+
+onUnmounted(() => {
+  // Cleanup any pending animations or timeouts
+  animating.value = false
+  console.log('🧩 PuzzleBoard component unmounted')
 })
 </script>
 
