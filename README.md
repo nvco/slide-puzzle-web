@@ -23,7 +23,30 @@ See Development Setup: `readme/development.md` for complete installation and set
 3. **Preview**: See the completed puzzle before starting
 4. **3D Flip**: Dramatic transition when ready to play
 5. **Gameplay**: Touch/click to slide pieces
-6. **Victory**: Celebration and options to continue
+6. **Victory**: Celebration with confetti animation and victory message
+
+## 🧩 Puzzle Mechanics
+
+### Solvable Shuffling Algorithm
+The puzzle uses a **solvable shuffling algorithm** that ensures every generated puzzle can be solved:
+
+- **Valid Move Generation**: Starts with the solved state and makes random valid moves
+- **Guaranteed Solvability**: Only uses moves that maintain puzzle solvability
+- **Proper Scrambling**: Makes 50+ random valid moves to ensure good scrambling
+- **Fallback Safety**: Includes a safe shuffle method if the main algorithm fails
+
+### Solvability Check
+For 3x3 puzzles, the algorithm uses the **inversion count method**:
+- Counts inversions (pairs where a larger number comes before a smaller number)
+- A 3x3 puzzle is solvable if the inversion count is even
+- Larger puzzles are always solvable when using valid moves
+
+### Celebration System
+When the puzzle is solved:
+- **Confetti Animation**: 50 colorful confetti pieces fall from the top
+- **Victory Message**: Displays completion stats (moves and time)
+- **Action Buttons**: Options to play again or choose a new image
+- **Smooth Transitions**: Fade-in overlay with bounce-in animation
 
 ## 🛠 Tech Stack
 
@@ -47,11 +70,25 @@ Playful, engaging interface with bright colors, smooth animations, and tactile f
 
 ## 📝 Current Status
 
-**Phase 1**: Core functionality development
-- [ ] Project setup and base components
-- [ ] Image manifest system
-- [ ] Puzzle mechanics and game logic
-- [ ] Mobile-responsive layout
+**Phase 1**: Core functionality development ✅
+- [x] Project setup and base components
+- [x] Image manifest system
+- [x] Puzzle mechanics and game logic
+- [x] Mobile-responsive layout
+- [x] Solvable shuffling algorithm
+- [x] Celebration system with confetti animation
+
+**Phase 2**: Accessibility and UX improvements ✅
+- [x] Focus states and keyboard navigation
+- [x] ARIA labels and semantic HTML
+- [x] Touch target sizing for mobile
+- [x] Error handling and validation
+
+**Phase 3**: Code organization and performance ✅
+- [x] Component extraction and refactoring
+- [x] Composable logic separation
+- [x] Performance optimizations
+- [x] JavaScript best practices
 
 ## 🤝 Contributing
 
@@ -59,6 +96,11 @@ This project uses build-time image manifest generation. To add new puzzle images
 1. Add image files to `/src/assets/puzzle-images/[category]/`
 2. Restart development server
 3. Images automatically appear in the application
+
+### Key Technical Notes
+- **Shuffling**: Always use the solvable shuffling algorithm in `gameStore.scrambleBoard()`
+- **Validation**: The `isSolvable()` function in `usePuzzleLogic` checks puzzle solvability
+- **Celebration**: Triggered via game state watching in `PuzzleBoard.vue`
 
 ---
 
