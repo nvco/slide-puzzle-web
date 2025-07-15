@@ -237,11 +237,13 @@ onMounted(() => {
 }
 
 .gallery-title {
-  @apply text-3xl font-bold text-puzzle-primary mb-2;
+  @apply text-2xl font-bold text-puzzle-primary mb-2;
+  @apply md:text-3xl;
 }
 
 .gallery-subtitle {
-  @apply text-lg text-gray-600;
+  @apply text-base text-gray-600;
+  @apply md:text-lg;
 }
 
 .category-tabs {
@@ -254,7 +256,7 @@ onMounted(() => {
   @apply transition-all duration-200 ease-in-out;
   @apply hover:border-puzzle-accent hover:bg-puzzle-accent hover:text-white;
   @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
-  @apply active:bg-puzzle-accent active:text-white;
+  @apply active:bg-puzzle-accent active:text-white active:scale-95;
   @apply min-w-11 min-h-11; /* Ensure 44px minimum touch target */
 }
 
@@ -265,8 +267,10 @@ onMounted(() => {
 }
 
 .image-grid {
-  @apply grid gap-4 mb-8;
-  @apply grid-cols-2 sm:grid-cols-3 lg:grid-cols-4;
+  @apply grid gap-3 mb-6;
+  @apply grid-cols-2;
+  @apply sm:gap-4 sm:mb-8 sm:grid-cols-3;
+  @apply lg:grid-cols-4;
 }
 
 .image-item {
@@ -274,7 +278,7 @@ onMounted(() => {
   @apply transition-all duration-300 ease-out;
   @apply hover:scale-105 hover:shadow-xl;
   @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
-  @apply active:scale-95;
+  @apply active:scale-95 active:shadow-lg;
   @apply min-w-11 min-h-11; /* Ensure 44px minimum touch target */
 }
 

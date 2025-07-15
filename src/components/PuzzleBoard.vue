@@ -108,6 +108,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
+import { ANIMATION_DURATIONS, PUZZLE_COLORS, PUZZLE_CONFIG } from '@/utils/constants'
 
 const gameStore = useGameStore()
 
@@ -151,27 +152,15 @@ const isMoveable = (index) => {
 
 // Get CSS styles for each piece
 const getPieceStyle = (piece, index) => {
-  if (piece === 0) {
+  if (piece === PUZZLE_CONFIG.EMPTY_PIECE_VALUE) {
     return {
       opacity: 0,
       pointerEvents: 'none'
     }
   }
   
-  // Color palette for numbered pieces
-  const colors = [
-    '#FF6B6B', // Red
-    '#4ECDC4', // Teal  
-    '#45B7D1', // Blue
-    '#96CEB4', // Green
-    '#FFEAA7', // Yellow
-    '#DDA0DD', // Plum
-    '#F4A460', // Sandy Brown
-    '#87CEEB', // Sky Blue
-  ]
-  
   return {
-    backgroundColor: colors[(piece - 1) % colors.length],
+    backgroundColor: PUZZLE_COLORS[(piece - 1) % PUZZLE_COLORS.length],
     aspectRatio: '1/1'
   }
 }
@@ -197,7 +186,7 @@ const movePiece = (index) => {
       if (gameStore.isSolved) {
         celebrateWin()
       }
-    }, 300)
+    }, ANIMATION_DURATIONS.PIECE_MOVE)
   }
 }
 
@@ -221,7 +210,7 @@ const startGame = async () => {
   isFlipped.value = true
   
   // Wait for flip animation to complete
-  await new Promise(resolve => setTimeout(resolve, 600))
+  await new Promise(resolve => setTimeout(resolve, ANIMATION_DURATIONS.FLIP))
   
   // Generate and scramble the puzzle
   gameStore.generatePuzzle()
@@ -253,7 +242,7 @@ watch(gameState, (newState) => {
   if (newState === 'won') {
     setTimeout(() => {
       celebrateWin()
-    }, 500)
+    }, ANIMATION_DURATIONS.VICTORY_DELAY)
   }
 })
 
@@ -268,10 +257,8 @@ onMounted(() => {
 }
 
 .puzzle-board-wrapper {
-  @apply relative;
-  width: 300px;
-  height: 300px;
-  transition: transform 0.6s ease-in-out;
+  @apply relative w-72 h-72;
+  @apply transition-transform duration-500 ease-in-out;
 }
 
 .puzzle-board-wrapper.flipped {
@@ -317,6 +304,7 @@ onMounted(() => {
   @apply border-puzzle-accent shadow-lg cursor-grab;
   @apply hover:scale-105 hover:shadow-xl;
   @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
+  @apply active:scale-95 active:cursor-grabbing;
 }
 
 .puzzle-piece.moveable:active {
@@ -334,7 +322,8 @@ onMounted(() => {
 }
 
 .piece-number {
-  @apply text-3xl font-bold text-white;
+  @apply text-2xl font-bold text-white;
+  @apply md:text-3xl;
   @apply filter drop-shadow-lg;
   @apply select-none;
 }
@@ -344,7 +333,8 @@ onMounted(() => {
 }
 
 .game-stats {
-  @apply flex space-x-6;
+  @apply flex flex-col space-y-2 space-x-0;
+  @apply md:flex-row md:space-y-0 md:space-x-6;
 }
 
 .stat-item {
@@ -356,11 +346,13 @@ onMounted(() => {
 }
 
 .stat-value {
-  @apply text-2xl font-bold text-puzzle-primary;
+  @apply text-xl font-bold text-puzzle-primary;
+  @apply md:text-2xl;
 }
 
 .action-buttons {
-  @apply flex space-x-4;
+  @apply flex flex-col space-y-2 space-x-0;
+  @apply md:flex-row md:space-y-0 md:space-x-4;
 }
 
 .ready-controls {
@@ -369,14 +361,13 @@ onMounted(() => {
 
 .ready-btn {
   @apply text-xl px-8 py-4 animate-pulse;
-  font-size: 1.25rem;
+  @apply text-2xl;
 }
 
 /* Mobile responsiveness */
 @media (max-width: 640px) {
   .puzzle-board-wrapper {
-    width: 280px;
-    height: 280px;
+    @apply w-64 h-64;
   }
   
   .puzzle-piece {

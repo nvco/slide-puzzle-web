@@ -63,6 +63,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
+import { ANIMATION_DURATIONS } from '@/utils/constants'
 
 const gameStore = useGameStore()
 
@@ -117,7 +118,7 @@ const animateDemo = () => {
     
     // Next move
     currentMoveIndex = (currentMoveIndex + 1) % demoMoves.length
-  }, 300)
+  }, ANIMATION_DURATIONS.DEMO_MOVE_DELAY)
 }
 
 // Start the game
@@ -131,7 +132,7 @@ onMounted(() => {
   
   // Start demo animation
   setTimeout(() => {
-    animationInterval.value = setInterval(animateDemo, 1500)
+    animationInterval.value = setInterval(animateDemo, ANIMATION_DURATIONS.DEMO_INTERVAL)
   }, 1000)
 })
 
@@ -158,17 +159,11 @@ onUnmounted(() => {
 
 /* Classic Plastic Frame */
 .puzzle-frame {
-  @apply relative mx-auto;
-  width: 320px;
-  height: 400px;
-  background: linear-gradient(135deg, #18C3FF 0%, #1AB5E6 100%) !important;
-  border-radius: 20px;
-  box-shadow: 
-    0 8px 25px rgba(0,0,0,0.15),
-    0 4px 12px rgba(0,0,0,0.1),
-    inset 0 2px 4px rgba(255,255,255,0.3),
-    inset 0 -2px 4px rgba(0,0,0,0.1);
-  padding: 30px;
+  @apply relative mx-auto w-80 h-96;
+  @apply bg-gradient-to-br from-blue-400 to-blue-500;
+  @apply rounded-3xl;
+  @apply shadow-2xl;
+  @apply p-8;
   
   /* Glossy plastic effect */
   background-image: 
@@ -176,27 +171,20 @@ onUnmounted(() => {
 }
 
 .puzzle-well {
-  @apply w-full;
-  height: 260px;
-  background: rgba(255,255,255,0.9);
-  border-radius: 8px;
-  box-shadow: 
-    inset 0 3px 6px rgba(0,0,0,0.15),
-    inset 0 1px 3px rgba(0,0,0,0.1);
-  padding: 4px;
-  margin-bottom: 16px;
+  @apply w-full h-64;
+  @apply bg-white/90;
+  @apply rounded-lg;
+  @apply shadow-inner;
+  @apply p-1;
+  @apply mb-4;
 }
 
 .reference-image {
-  @apply w-full;
-  height: 80px;
-  background: rgba(255,255,255,0.9);
-  border-radius: 8px;
-  box-shadow: 
-    inset 0 2px 4px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @apply w-full h-20;
+  @apply bg-white/90;
+  @apply rounded-lg;
+  @apply shadow-inner;
+  @apply flex items-center justify-center;
 }
 
 .reference-content {
@@ -205,14 +193,14 @@ onUnmounted(() => {
 
 .reference-text {
   @apply text-lg font-bold text-blue-600;
-  letter-spacing: 1px;
+  @apply tracking-wide;
 }
 
 .demo-board {
   @apply w-full h-full;
   @apply grid grid-cols-3 grid-rows-3 gap-1;
-  background: transparent;
-  border-radius: 4px;
+  @apply bg-transparent;
+  @apply rounded;
 }
 
 .demo-piece {
@@ -220,14 +208,8 @@ onUnmounted(() => {
   @apply flex items-center justify-center;
   @apply transition-all duration-300 ease-out;
   @apply relative;
-  
-  /* Clean plastic piece styling */
-  box-shadow: 
-    0 2px 6px rgba(0,0,0,0.15),
-    0 1px 3px rgba(0,0,0,0.1),
-    inset 0 1px 2px rgba(255,255,255,0.2);
-  
-  border: 1px solid rgba(255,255,255,0.3);
+  @apply shadow-md;
+  @apply border border-white/30;
   
   /* Subtle glossy effect */
   background-image: 
@@ -240,18 +222,13 @@ onUnmounted(() => {
 }
 
 .demo-piece.moving {
-  box-shadow: 
-    0 4px 12px rgba(0,0,0,0.2),
-    0 2px 6px rgba(0,0,0,0.15),
-    inset 0 1px 2px rgba(255,255,255,0.3);
+  @apply shadow-lg;
 }
 
 .demo-number {
   @apply text-2xl font-bold text-gray-800;
   @apply filter drop-shadow-sm;
-  text-shadow: 
-    0 1px 2px rgba(0,0,0,0.1);
-  font-family: 'Arial', sans-serif;
+  @apply font-sans;
 }
 
 
@@ -261,17 +238,19 @@ onUnmounted(() => {
 }
 
 .welcome-title {
-  @apply text-4xl font-bold text-puzzle-primary mb-4;
+  @apply text-3xl font-bold text-puzzle-primary mb-4;
+  @apply md:text-4xl;
   @apply animate-bounce-in;
 }
 
 .welcome-subtitle {
-  @apply text-xl text-gray-600 mb-6;
+  @apply text-lg text-gray-600 mb-6;
+  @apply md:text-xl;
 }
 
 .demo-instructions {
-  @apply flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-8;
-  @apply mb-8;
+  @apply flex flex-col justify-center items-center space-y-4 mb-6;
+  @apply sm:flex-row sm:space-y-0 sm:space-x-8 sm:mb-8;
 }
 
 .instruction-step {
@@ -281,7 +260,7 @@ onUnmounted(() => {
 .step-number {
   @apply w-8 h-8 bg-puzzle-accent text-white rounded-full;
   @apply flex items-center justify-center font-bold text-sm;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  @apply shadow-md;
 }
 
 .step-text {
@@ -298,19 +277,15 @@ onUnmounted(() => {
 /* Mobile responsiveness */
 @media (max-width: 640px) {
   .puzzle-frame {
-    width: 260px;
-    height: 320px;
-    padding: 20px;
+    @apply w-64 h-80 p-5;
   }
   
   .puzzle-well {
-    height: 200px;
-    padding: 4px;
-    margin-bottom: 12px;
+    @apply h-48 p-1 mb-3;
   }
   
   .reference-image {
-    height: 60px;
+    @apply h-16;
   }
   
   .reference-text {
