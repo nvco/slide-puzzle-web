@@ -61,17 +61,7 @@
       </div>
     </div>
 
-    <!-- Number Puzzle Button -->
-    <div class="number-puzzle-section">
-      <button 
-        @click="createNumberPuzzle" 
-        class="btn-primary number-btn"
-        aria-label="Create a number puzzle to test the sliding mechanics"
-      >
-        🔢 Create Number Puzzle
-      </button>
-      <p class="number-hint">Test the sliding mechanics with colorful numbers</p>
-    </div>
+
 
     <!-- Random Selection Button -->
     <div class="random-selection">
@@ -143,6 +133,7 @@ const getCategoryEmoji = (category) => {
     animals: '🐾',
     landscapes: '🏞️',
     cartoons: '🎨',
+    numbers: '🔢',
     people: '👥',
     vehicles: '🚗',
     food: '🍕',
@@ -202,20 +193,7 @@ const clearSelection = () => {
   selectedImage.value = null
 }
 
-// Create number puzzle
-const createNumberPuzzle = () => {
-  // Create a dummy "image" object for numbers
-  const numberPuzzle = {
-    id: 'numbers-puzzle',
-    filename: 'numbers.puzzle',
-    path: '/numbers',
-    alt: 'Number Puzzle',
-    category: 'numbers'
-  }
-  
-  gameStore.selectImage(numberPuzzle)
-  console.log('🔢 Number puzzle created!')
-}
+
 
 // Image loading handlers
 const handleImageLoad = (event) => {
@@ -244,6 +222,14 @@ onMounted(() => {
         loading.value = false
       }
     )
+  }
+  
+  // Pre-select the number puzzle
+  const numberPuzzle = availableImages.value.find(img => img.category === 'numbers')
+  if (numberPuzzle) {
+    selectedImage.value = numberPuzzle
+    selectedCategory.value = 'numbers'
+    console.log('🔢 Pre-selected number puzzle')
   }
 })
 
@@ -358,17 +344,7 @@ onUnmounted(() => {
   @apply text-2xl filter drop-shadow-lg;
 }
 
-.number-puzzle-section {
-  @apply text-center mb-6;
-}
 
-.number-btn {
-  @apply mb-2;
-}
-
-.number-hint {
-  @apply text-sm text-gray-500;
-}
 
 .random-selection {
   @apply text-center mb-6;

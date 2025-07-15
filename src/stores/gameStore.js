@@ -5,9 +5,15 @@ import { usePuzzleLogic } from '@/composables/usePuzzleLogic'
 export const useGameStore = defineStore('game', {
   state: () => ({
     // Game state
-    currentPuzzle: null,
+    currentPuzzle: {
+      id: 'numbers-puzzle',
+      filename: 'numbers',
+      path: null,
+      alt: 'Number Slide Puzzle',
+      category: 'numbers'
+    },
     puzzleSize: 3, // 3x3 grid (8 pieces + 1 empty)
-    gameState: 'welcome', // 'welcome', 'selecting', 'playing', 'won'
+    gameState: 'playing', // 'welcome', 'selecting', 'playing', 'won'
     moves: 0,
     startTime: null,
     
@@ -17,14 +23,13 @@ export const useGameStore = defineStore('game', {
     currentImageIndex: 0,
     
     // Puzzle board state
-    board: [], // Array of piece positions
-    solution: [], // Solved state
+    board: [1, 2, 3, 4, 5, 6, 7, 8, 0], // Array of piece positions (solved state initially)
+    solution: [1, 2, 3, 4, 5, 6, 7, 8, 0], // Solved state
     emptyPosition: { row: 2, col: 2 }, // Position of empty space
     
     // UI state
-    showWelcome: true,
-    showImageGallery: false,
-    showPuzzle: false,
+    showWelcome: false,
+    showPuzzle: true,
     animating: false,
   }),
 
@@ -101,25 +106,39 @@ export const useGameStore = defineStore('game', {
     startWelcome() {
       this.gameState = 'welcome'
       this.showWelcome = true
-      this.showImageGallery = false
       this.showPuzzle = false
     },
     
-    // Show image gallery for selection
+    // Show image gallery for selection (kept for future use)
     showImageSelection() {
       this.gameState = 'selecting'
       this.showWelcome = false
-      this.showImageGallery = true
       this.showPuzzle = false
     },
     
-    // Select an image and prepare puzzle
+    // Start numbers puzzle directly
+    startNumbersPuzzle() {
+      this.currentPuzzle = {
+        id: 'numbers-puzzle',
+        filename: 'numbers',
+        path: null,
+        alt: 'Number Slide Puzzle',
+        category: 'numbers'
+      }
+      this.generatePuzzle()
+      this.gameState = 'playing'
+      this.showWelcome = false
+      this.showPuzzle = true
+      this.startTime = Date.now()
+      this.moves = 0
+    },
+    
+    // Select an image and prepare puzzle (kept for future use)
     selectImage(image) {
       this.currentPuzzle = image
       this.shownImages.push(image.id)
       this.generatePuzzle()
       this.gameState = 'playing'
-      this.showImageGallery = false
       this.showPuzzle = true
       this.startTime = Date.now()
       this.moves = 0
@@ -366,7 +385,7 @@ export const useGameStore = defineStore('game', {
     
     // Start new game
     startNewGame() {
-      this.showImageSelection()
+      this.startWelcome()
     },
     
     // Reset shown images (for testing)

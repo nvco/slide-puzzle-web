@@ -22,7 +22,9 @@
           <!-- Reference image at bottom -->
           <div class="reference-image">
             <div class="reference-content">
-              <span class="reference-text">NUMBERS</span>
+              <span class="reference-text">1 2 3</span>
+              <span class="reference-text">4 5 6</span>
+              <span class="reference-text">7 8</span>
             </div>
           </div>
         </div>
@@ -35,11 +37,11 @@
         <div class="demo-instructions">
           <div class="instruction-step">
             <span class="step-number">1</span>
-            <span class="step-text">Choose a picture</span>
+            <span class="step-text">Slide the numbers</span>
           </div>
           <div class="instruction-step">
             <span class="step-number">2</span>
-            <span class="step-text">Slide the pieces</span>
+            <span class="step-text">Arrange them in order</span>
           </div>
           <div class="instruction-step">
             <span class="step-number">3</span>
@@ -123,7 +125,8 @@ const animateDemo = () => {
 
 // Start the game
 const startGame = () => {
-  gameStore.showImageSelection()
+  // Go directly to numbers puzzle
+  gameStore.startNumbersPuzzle()
 }
 
 // Lifecycle
@@ -188,12 +191,13 @@ onUnmounted(() => {
 }
 
 .reference-content {
-  @apply text-center;
+  @apply text-center flex flex-col;
 }
 
 .reference-text {
-  @apply text-lg font-bold text-blue-600;
+  @apply text-sm font-bold text-blue-600;
   @apply tracking-wide;
+  @apply leading-tight;
 }
 
 .demo-board {

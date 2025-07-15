@@ -86,9 +86,9 @@ function onKeyDownSpace(e) { emit('keydown-space', e) }
   @apply focus:ring-2 focus:ring-gray-400 focus:outline-none;
 }
 .piece-number {
-  @apply text-2xl font-bold text-white;
+  @apply text-2xl font-bold text-gray-800;
   @apply md:text-3xl;
-  @apply filter drop-shadow-lg;
+  @apply filter drop-shadow-sm;
   @apply select-none;
 }
 </style> 

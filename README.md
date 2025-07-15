@@ -90,6 +90,10 @@ Playful, engaging interface with bright colors, smooth animations, and tactile f
 - [x] Performance optimizations
 - [x] JavaScript best practices
 
+## 🚧 TODO
+
+- [ ] **Create proper favicon**: Design and implement a custom favicon for the slide puzzle app (currently using placeholder `favicon.svg`)
+
 ## 🤝 Contributing
 
 This project uses build-time image manifest generation. To add new puzzle images:

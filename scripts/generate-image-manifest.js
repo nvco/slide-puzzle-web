@@ -40,13 +40,21 @@ function generateImageManifest() {
       const categoryPath = path.join(IMAGES_DIR, category)
       const images = fs.readdirSync(categoryPath)
         .filter(file => /\.(jpg|jpeg|png|webp|svg)$/i.test(file))
-        .map((file, index) => ({
-          id: `${category}-${index}`,
-          filename: file,
-          path: `/src/assets/puzzle-images/${category}/${file}`,
-          alt: file.replace(/\.(jpg|jpeg|png|webp|svg)$/i, '').replace(/[-_]/g, ' '),
-          category: category
-        }))
+        .map((file, index) => {
+          // Special handling for number puzzle
+          let alt = file.replace(/\.(jpg|jpeg|png|webp|svg)$/i, '').replace(/[-_]/g, ' ')
+          if (category === 'numbers' && file === 'placeholder-numbers.svg') {
+            alt = 'Number Puzzle'
+          }
+          
+          return {
+            id: `${category}-${index}`,
+            filename: file,
+            path: `/src/assets/puzzle-images/${category}/${file}`,
+            alt: alt,
+            category: category
+          }
+        })
 
       manifest.categories[category] = images
       manifest.totalImages += images.length

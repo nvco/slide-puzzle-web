@@ -6,120 +6,62 @@
     </div>
     
     <!-- Puzzle Board -->
-    <div 
-      class="puzzle-board-wrapper flip-3d"
-      :class="{ 'flipped': isFlipped }"
-    >
-      <!-- Front side - Solved puzzle preview -->
-      <div class="puzzle-face flip-front">
-        <div 
-          class="puzzle-board solved-preview"
-          :class="`grid-${puzzleSize}x${puzzleSize}`"
-        >
-          <PuzzlePiece
-            v-for="(piece, index) in solvedPieces"
-            :key="`solved-${index}`"
-            :piece="piece"
-            :isSolved="true"
-            :pieceStyle="getPieceStyle(piece, index)"
-            :ariaLabel="piece === 0 ? 'Empty space' : `Solved puzzle piece ${piece}`"
-            :role="'presentation'"
-            :tabIndex="-1"
-          />
-        </div>
-      </div>
-
-      <!-- Back side - Scrambled puzzle game -->
-      <div class="puzzle-face flip-back">
-        <div 
-          class="puzzle-board game-board"
-          :class="`grid-${puzzleSize}x${puzzleSize}`"
-          role="grid"
-          :aria-label="`${puzzleSize}x${puzzleSize} puzzle board`"
-        >
-          <PuzzlePiece
-            v-for="(piece, index) in gamePieces"
-            :key="`game-${index}`"
-            :piece="piece"
-            :isMoveable="isMoveable(index)"
-            :isAnimating="animating"
-            :pieceStyle="getPieceStyle(piece, index)"
-            :ariaLabel="piece === 0 ? 'Empty space' : `Move puzzle piece ${piece}`"
-            :ariaDescribedBy="isMoveable(index) ? 'moveable-piece-instruction' : undefined"
-            :role="'button'"
-            :tabIndex="0"
-            @click="() => movePiece(index)"
-            @touchstart="() => handleTouchStart(index)"
-            @touchend="() => handleTouchEnd(index)"
-            @keydown-enter="() => movePiece(index)"
-            @keydown-space="() => movePiece(index)"
-          />
-        </div>
+    <div class="puzzle-board-wrapper">
+      <div 
+        class="puzzle-board game-board"
+        :class="`grid-${puzzleSize}x${puzzleSize}`"
+        role="grid"
+        :aria-label="`${puzzleSize}x${puzzleSize} puzzle board`"
+      >
+        <PuzzlePiece
+          v-for="(piece, index) in gamePieces"
+          :key="`game-${index}`"
+          :piece="piece"
+          :isMoveable="isMoveable(index)"
+          :isAnimating="animating"
+          :pieceStyle="getPieceStyle(piece, index)"
+          :ariaLabel="piece === 0 ? 'Empty space' : `Move puzzle piece ${piece}`"
+          :ariaDescribedBy="isMoveable(index) ? 'moveable-piece-instruction' : undefined"
+          :role="'button'"
+          :tabIndex="0"
+          @click="() => movePiece(index)"
+          @touchstart="() => handleTouchStart(index)"
+          @touchend="() => handleTouchEnd(index)"
+          @keydown-enter="() => movePiece(index)"
+          @keydown-space="() => movePiece(index)"
+        />
       </div>
     </div>
 
     <!-- Game Controls -->
     <GameControls
-      v-if="!showPreview"
-      :moves="moves"
-      :elapsedTime="elapsedTime"
       @reset="resetPuzzle"
-      @new-game="newGame"
     />
 
-    <!-- Ready to Play Button -->
-    <div class="ready-controls" v-if="showPreview">
-      <button 
-        @click="startGame" 
-        class="btn-primary ready-btn"
-        aria-label="Start the puzzle game"
-      >
-        🎯 Ready to Play!
-      </button>
+    <!-- Initial Big Bang Celebration -->
+    <div 
+      v-if="showBigBang" 
+      class="big-bang-container"
+    >
+      <div class="big-bang-explosion">
+        <div class="bang-text">🎉 SOLVED! 🎉</div>
+        <div class="bang-stars">
+          <div v-for="i in 20" :key="`star-${i}`" class="star" :style="getStarStyle(i)"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Celebration Overlay -->
+    <!-- Ongoing Confetti Celebration -->
     <div 
       v-if="showCelebration" 
-      class="celebration-overlay"
-      role="dialog"
-      aria-label="Puzzle solved celebration"
+      class="confetti-container"
     >
-      <!-- Confetti Container -->
-      <div class="confetti-container">
-        <div 
-          v-for="i in 50" 
-          :key="i"
-          class="confetti"
-          :style="getConfettiStyle(i)"
-        ></div>
-      </div>
-      
-      <!-- Victory Message -->
-      <div class="victory-message">
-        <div class="victory-icon">🎉</div>
-        <h2 class="victory-title">Puzzle Solved!</h2>
-        <div class="victory-stats">
-          <p>Moves: {{ moves }}</p>
-          <p>Time: {{ formatTime(elapsedTime) }}</p>
-        </div>
-        <div class="victory-actions">
-          <button 
-            @click="playAgain" 
-            class="btn-primary"
-            aria-label="Play another puzzle"
-          >
-            🎮 Play Again
-          </button>
-          <button 
-            @click="newGame" 
-            class="btn-secondary"
-            aria-label="Choose a different image"
-          >
-            🖼️ New Image
-          </button>
-        </div>
-      </div>
+      <div 
+        v-for="i in 50" 
+        :key="i"
+        class="confetti"
+        :style="getConfettiStyle(i)"
+      ></div>
     </div>
   </div>
 </template>
@@ -147,27 +89,15 @@ const {
 } = usePuzzleLogic(gameStore)
 
 // Reactive state
-const isFlipped = ref(false)
 const animating = ref(false)
-const showPreview = ref(true)
 const touchStartIndex = ref(null)
 const showCelebration = ref(false)
+const showBigBang = ref(false)
 
 // Computed properties
-const moves = computed(() => gameStore.moves)
-const elapsedTime = computed(() => gameStore.elapsedTime)
 const currentImage = computed(() => gameStore.currentPuzzle)
 
-/**
- * Format time in MM:SS format
- * @param {number} seconds - Time in seconds
- * @returns {string} Formatted time string
- */
-const formatTime = (seconds) => {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
-}
+
 
 /**
  * Generate confetti animation styles
@@ -189,9 +119,25 @@ const getConfettiStyle = (index) => {
   }
 }
 
+/**
+ * Generate star animation styles for big bang effect
+ * @param {number} index - Star index
+ * @returns {Object} CSS style object
+ */
+const getStarStyle = (index) => {
+  const angle = (index / 20) * 360
+  const distance = 100 + Math.random() * 50
+  const delay = Math.random() * 0.5
+  
+  return {
+    transform: `rotate(${angle}deg) translateY(-${distance}px)`,
+    animationDelay: `${delay}s`
+  }
+}
+
 // Throttled piece movement to prevent rapid clicking
 const throttledMovePiece = throttle((index) => {
-  if (animating.value || showPreview.value) return
+  if (animating.value) return
   
   handleAsync(
     async () => {
@@ -230,67 +176,37 @@ const handleTouchEnd = (index) => {
   touchStartIndex.value = null
 }
 
-// Start the game (flip animation)
-const startGame = async () => {
-  try {
-    showPreview.value = false
-    
-    // 3D flip animation
-    isFlipped.value = true
-    
-    // Wait for flip animation to complete
-    await new Promise(resolve => setTimeout(resolve, ANIMATION_DURATIONS.FLIP))
-    
-    // Generate and scramble the puzzle
-    await handleAsync(
-      async () => {
-        gameStore.generatePuzzle()
-        gameStore.gameState = 'playing'
-        gameStore.startTime = Date.now()
-      },
-      'startGame',
-      (error) => {
-        console.error('Failed to start game:', error.message)
-        // Reset to preview state on error
-        showPreview.value = true
-        isFlipped.value = false
-      }
-    )
-  } catch (error) {
-    logError(error, 'startGame')
-    // Reset to preview state on error
-    showPreview.value = true
-    isFlipped.value = false
-  }
-}
-
 // Reset current puzzle
 const resetPuzzle = () => {
   gameStore.resetPuzzle()
   animating.value = false
   showCelebration.value = false
+  showBigBang.value = false
 }
 
-// Start new game
-const newGame = () => {
-  gameStore.startNewGame()
-  isFlipped.value = false
-  showPreview.value = true
-  showCelebration.value = false
-}
+
 
 // Play again with same image
 const playAgain = () => {
   showCelebration.value = false
+  showBigBang.value = false
   resetPuzzle()
 }
 
 // Celebrate win
 const celebrateWin = () => {
   console.log('🎉 Puzzle solved!')
-  console.log('🎉 Setting showCelebration to true')
-  showCelebration.value = true
-  console.log('🎉 showCelebration is now:', showCelebration.value)
+  
+  // Start with big bang effect
+  showBigBang.value = true
+  console.log('💥 Big bang started')
+  
+  // After big bang, start ongoing confetti
+  setTimeout(() => {
+    showBigBang.value = false
+    showCelebration.value = true
+    console.log('🎉 Ongoing confetti started')
+  }, 2000) // Big bang lasts 2 seconds
 }
 
 // Watch for game state changes
@@ -322,19 +238,6 @@ onUnmounted(() => {
 .puzzle-board-wrapper {
   @apply relative w-72 h-72;
   @apply transition-transform duration-500 ease-in-out;
-}
-
-.puzzle-board-wrapper.flipped {
-  transform: rotateY(180deg);
-}
-
-.puzzle-face {
-  @apply absolute inset-0 w-full h-full;
-  backface-visibility: hidden;
-}
-
-.flip-back {
-  transform: rotateY(180deg);
 }
 
 .puzzle-board {
@@ -393,14 +296,7 @@ onUnmounted(() => {
 
 
 
-.ready-controls {
-  @apply flex justify-center;
-}
 
-.ready-btn {
-  @apply text-xl px-8 py-4 animate-pulse;
-  @apply text-2xl;
-}
 
 /* Mobile responsiveness */
 @media (max-width: 640px) {
@@ -417,17 +313,40 @@ onUnmounted(() => {
   }
 }
 
-/* Celebration Overlay */
-.celebration-overlay {
-  @apply fixed inset-0 z-50;
+/* Big Bang Celebration */
+.big-bang-container {
+  @apply fixed inset-0 pointer-events-none z-50;
   @apply flex items-center justify-center;
-  @apply bg-black bg-opacity-50 backdrop-blur-sm;
-  animation: fade-in 0.5s ease-out;
+  @apply overflow-hidden;
+}
+
+.big-bang-explosion {
+  @apply relative;
+  animation: big-bang-pulse 2s ease-out;
+}
+
+.bang-text {
+  @apply text-6xl font-bold text-yellow-400;
+  @apply filter drop-shadow-lg;
+  @apply animate-bounce;
+  animation: big-bang-text 2s ease-out;
+}
+
+.bang-stars {
+  @apply absolute inset-0;
+  @apply flex items-center justify-center;
+}
+
+.star {
+  @apply absolute w-4 h-4;
+  @apply bg-yellow-300;
+  @apply rounded-full;
+  animation: star-explosion 2s ease-out;
 }
 
 /* Confetti Animation */
 .confetti-container {
-  @apply absolute inset-0 pointer-events-none;
+  @apply fixed inset-0 pointer-events-none z-50;
   @apply overflow-hidden;
 }
 
@@ -435,6 +354,51 @@ onUnmounted(() => {
   @apply absolute w-2 h-2 rounded-sm;
   @apply opacity-80;
   animation: confetti-fall 3s linear infinite;
+}
+
+@keyframes big-bang-pulse {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes big-bang-text {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.5) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+@keyframes star-explosion {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
 }
 
 @keyframes confetti-fall {
@@ -445,66 +409,6 @@ onUnmounted(() => {
   100% {
     transform: translateY(100vh) rotate(720deg);
     opacity: 0;
-  }
-}
-
-/* Victory Message */
-.victory-message {
-  @apply bg-white rounded-2xl shadow-2xl;
-  @apply p-8 max-w-md mx-4;
-  @apply text-center;
-  @apply border-4 border-puzzle-accent;
-  animation: bounce-in 0.6s ease-out;
-}
-
-.victory-icon {
-  @apply text-6xl mb-4;
-  @apply animate-bounce;
-}
-
-.victory-title {
-  @apply text-3xl font-bold text-gray-800 mb-4;
-  @apply md:text-4xl;
-}
-
-.victory-stats {
-  @apply space-y-2 mb-6;
-  @apply text-lg text-gray-600;
-}
-
-.victory-stats p {
-  @apply font-semibold;
-}
-
-.victory-actions {
-  @apply flex flex-col space-y-3;
-  @apply sm:flex-row sm:space-y-0 sm:space-x-4;
-}
-
-/* Animation Keyframes */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes bounce-in {
-  0% {
-    transform: scale(0.3);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  70% {
-    transform: scale(0.9);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
   }
 }
 

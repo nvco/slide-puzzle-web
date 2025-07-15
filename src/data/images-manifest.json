@@ -15,26 +15,8 @@
         "alt": "placeholder dog",
         "category": "animals"
       }
-    ],
-    "cartoons": [
-      {
-        "id": "cartoons-0",
-        "filename": "placeholder-smiley.svg",
-        "path": "/src/assets/puzzle-images/cartoons/placeholder-smiley.svg",
-        "alt": "placeholder smiley",
-        "category": "cartoons"
-      }
-    ],
-    "landscapes": [
-      {
-        "id": "landscapes-0",
-        "filename": "placeholder-mountain.svg",
-        "path": "/src/assets/puzzle-images/landscapes/placeholder-mountain.svg",
-        "alt": "placeholder mountain",
-        "category": "landscapes"
-      }
     ]
   },
-  "totalImages": 4,
-  "lastGenerated": "2025-07-15T17:19:25.809Z"
+  "totalImages": 2,
+  "lastGenerated": "2025-07-15T19:07:31.894Z"
 }

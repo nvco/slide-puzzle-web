@@ -55,7 +55,8 @@ export function usePuzzleLogic(gameStore) {
     }
     
     return {
-      backgroundColor: PUZZLE_COLORS[(piece - 1) % PUZZLE_COLORS.length],
+      backgroundColor: '#ffffff',
+      border: '2px solid #e5e7eb',
       aspectRatio: '1/1'
     }
   }
