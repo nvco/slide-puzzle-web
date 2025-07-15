@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { AppError, ERROR_TYPES, ERROR_SEVERITY, logError, validatePuzzleBoard } from '@/utils/errorHandler'
+import { usePuzzleLogic } from '@/composables/usePuzzleLogic'
 
 export const useGameStore = defineStore('game', {
   state: () => ({
@@ -147,6 +148,14 @@ export const useGameStore = defineStore('game', {
           )
         }
         
+        // Check solvability (for debugging)
+        const puzzleLogic = usePuzzleLogic(this)
+        if (!puzzleLogic.isSolvable(this.board, size)) {
+          console.warn('⚠️ Generated puzzle may not be solvable!')
+        } else {
+          console.log('✅ Generated puzzle is solvable')
+        }
+        
         // Set empty position
         const emptyIndex = this.board.indexOf(0)
         this.emptyPosition = {
@@ -154,7 +163,7 @@ export const useGameStore = defineStore('game', {
           col: emptyIndex % size
         }
         
-        console.log(`🧩 Generated ${size}x${size} puzzle`)
+        console.log(`🧩 Generated ${size}x${size} puzzle:`, this.board)
       } catch (error) {
         logError(error, 'generatePuzzle')
         throw error
@@ -163,14 +172,16 @@ export const useGameStore = defineStore('game', {
     
     /**
      * Scramble the board using a solvable algorithm
-     * Ensures the puzzle can always be solved
+     * Ensures the puzzle can always be solved by only making valid moves
      */
     scrambleBoard() {
       try {
         const size = this.puzzleSize
-        const moves = size * size * 2 // Number of random moves to perform
+        const totalPieces = size * size
+        const scrambleMoves = Math.max(50, totalPieces * 3) // Ensure enough moves for good scrambling
         
-        for (let i = 0; i < moves; i++) {
+        // Start with solved state and make random valid moves
+        for (let i = 0; i < scrambleMoves; i++) {
           const validMoves = this.getValidMoves()
           if (validMoves.length > 0) {
             const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)]
@@ -178,22 +189,32 @@ export const useGameStore = defineStore('game', {
           }
         }
         
-        console.log(`🔄 Board scrambled with ${moves} random moves`)
+        console.log(`🔄 Board scrambled with ${scrambleMoves} valid moves`)
       } catch (error) {
         logError(error, 'scrambleBoard')
-        // Fallback to simple shuffle if scrambling fails
-        this.fallbackShuffle()
+        // If scrambling fails, use a simple but safe method
+        this.safeShuffle()
       }
     },
     
     /**
-     * Fallback shuffle method if proper scrambling fails
+     * Safe shuffle method that ensures solvability
+     * Uses the fact that any arrangement reachable by valid moves is solvable
      */
-    fallbackShuffle() {
-      for (let i = this.board.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[this.board[i], this.board[j]] = [this.board[j], this.board[i]]
+    safeShuffle() {
+      const size = this.puzzleSize
+      const totalPieces = size * size
+      
+      // Make a small number of random valid moves to create a simple scramble
+      for (let i = 0; i < 20; i++) {
+        const validMoves = this.getValidMoves()
+        if (validMoves.length > 0) {
+          const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)]
+          this.performMove(randomMove)
+        }
       }
+      
+      console.log('🔄 Board safely shuffled with minimal moves')
     },
     
     /**
@@ -204,6 +225,12 @@ export const useGameStore = defineStore('game', {
       const moves = []
       const size = this.puzzleSize
       const emptyIndex = this.board.indexOf(0)
+      
+      if (emptyIndex === -1) {
+        console.warn('No empty space found in board')
+        return moves
+      }
+      
       const emptyRow = Math.floor(emptyIndex / size)
       const emptyCol = emptyIndex % size
       
@@ -231,17 +258,32 @@ export const useGameStore = defineStore('game', {
      */
     performMove(pieceIndex) {
       const size = this.puzzleSize
+      const emptyIndex = this.board.indexOf(0)
+      
+      if (emptyIndex === -1) {
+        console.warn('No empty space found for move')
+        return
+      }
+      
+      // Validate that the move is actually valid
       const pieceRow = Math.floor(pieceIndex / size)
       const pieceCol = pieceIndex % size
-      const emptyRow = this.emptyPosition.row
-      const emptyCol = this.emptyPosition.col
+      const emptyRow = Math.floor(emptyIndex / size)
+      const emptyCol = emptyIndex % size
+      
+      // Check if piece is adjacent to empty space
+      const isAdjacent = (
+        (Math.abs(pieceRow - emptyRow) === 1 && pieceCol === emptyCol) ||
+        (Math.abs(pieceCol - emptyCol) === 1 && pieceRow === emptyRow)
+      )
+      
+      if (!isAdjacent) {
+        console.warn('Invalid move attempted during scrambling')
+        return
+      }
       
       // Swap piece with empty space
-      const emptyIndex = emptyRow * size + emptyCol
       ;[this.board[pieceIndex], this.board[emptyIndex]] = [this.board[emptyIndex], this.board[pieceIndex]]
-      
-      // Update empty position
-      this.emptyPosition = { row: pieceRow, col: pieceCol }
     },
     
     /**

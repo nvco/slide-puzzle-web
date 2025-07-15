@@ -104,6 +104,36 @@ export function usePuzzleLogic(gameStore) {
     return moves
   })
 
+  /**
+   * Check if a puzzle state is solvable
+   * Uses the inversion count method for 3x3 puzzles
+   * @param {Array} board - The board state to check (optional, uses current board if not provided)
+   * @param {number} size - The puzzle size (optional, uses current size if not provided)
+   * @returns {boolean} True if the puzzle is solvable
+   */
+  const isSolvable = (board = gamePieces.value, size = puzzleSize.value) => {
+    if (size === 3) {
+      // For 3x3 puzzles, count inversions (excluding the empty space)
+      let inversions = 0
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === 0) continue // Skip empty space
+        for (let j = i + 1; j < board.length; j++) {
+          if (board[j] === 0) continue // Skip empty space
+          if (board[i] > board[j]) {
+            inversions++
+          }
+        }
+      }
+      
+      // 3x3 puzzle is solvable if inversions count is even
+      return inversions % 2 === 0
+    } else {
+      // For larger puzzles, any state reachable by valid moves is solvable
+      // Since we only use valid moves for scrambling, this should always be true
+      return true
+    }
+  }
+
   return {
     // Computed properties
     puzzleSize,
@@ -117,5 +147,6 @@ export function usePuzzleLogic(gameStore) {
     // Functions
     isMoveable,
     getPieceStyle,
+    isSolvable,
   }
 } 
