@@ -180,7 +180,7 @@ onUnmounted(() => {
 }
 
 .reference-image {
-  @apply w-full h-20;
+  @apply w-full h-16;
   @apply bg-white/90;
   @apply rounded-lg;
   @apply shadow-inner;

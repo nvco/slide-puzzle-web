@@ -16,14 +16,16 @@
           class="puzzle-board solved-preview"
           :class="`grid-${puzzleSize}x${puzzleSize}`"
         >
-                     <div
-             v-for="(piece, index) in solvedPieces"
-             :key="`solved-${index}`"
-             class="puzzle-piece solved-piece"
-             :style="getPieceStyle(piece, index)"
-           >
-             <div v-if="piece !== 0" class="piece-number">{{ piece }}</div>
-           </div>
+          <PuzzlePiece
+            v-for="(piece, index) in solvedPieces"
+            :key="`solved-${index}`"
+            :piece="piece"
+            :isSolved="true"
+            :pieceStyle="getPieceStyle(piece, index)"
+            :ariaLabel="piece === 0 ? 'Empty space' : `Solved puzzle piece ${piece}`"
+            :role="'presentation'"
+            :tabIndex="-1"
+          />
         </div>
       </div>
 
@@ -35,62 +37,35 @@
           role="grid"
           :aria-label="`${puzzleSize}x${puzzleSize} puzzle board`"
         >
-                               <div
+          <PuzzlePiece
             v-for="(piece, index) in gamePieces"
             :key="`game-${index}`"
-            class="puzzle-piece game-piece"
-            :class="{ 
-              'empty': piece === 0,
-              'moveable': isMoveable(index),
-              'animating': animating 
-            }"
-            :style="getPieceStyle(piece, index)"
-            :aria-label="piece === 0 ? 'Empty space' : `Move puzzle piece ${piece}`"
-            :aria-describedby="isMoveable(index) ? 'moveable-piece-instruction' : undefined"
-            role="button"
-            tabindex="0"
-            @click="movePiece(index)"
-            @touchstart="handleTouchStart(index)"
-            @touchend="handleTouchEnd(index)"
-            @keydown.enter="movePiece(index)"
-            @keydown.space.prevent="movePiece(index)"
-          >
-            <div v-if="piece !== 0" class="piece-number">{{ piece }}</div>
-          </div>
+            :piece="piece"
+            :isMoveable="isMoveable(index)"
+            :isAnimating="animating"
+            :pieceStyle="getPieceStyle(piece, index)"
+            :ariaLabel="piece === 0 ? 'Empty space' : `Move puzzle piece ${piece}`"
+            :ariaDescribedBy="isMoveable(index) ? 'moveable-piece-instruction' : undefined"
+            :role="'button'"
+            :tabIndex="0"
+            @click="() => movePiece(index)"
+            @touchstart="() => handleTouchStart(index)"
+            @touchend="() => handleTouchEnd(index)"
+            @keydown-enter="() => movePiece(index)"
+            @keydown-space="() => movePiece(index)"
+          />
         </div>
       </div>
     </div>
 
     <!-- Game Controls -->
-    <div class="game-controls" v-if="!showPreview" role="region" aria-label="Game statistics and controls">
-      <div class="game-stats" role="group" aria-label="Game statistics">
-        <div class="stat-item">
-          <span class="stat-label" id="moves-label">Moves:</span>
-          <span class="stat-value" aria-labelledby="moves-label">{{ moves }}</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label" id="time-label">Time:</span>
-          <span class="stat-value" aria-labelledby="time-label">{{ formatTime(elapsedTime) }}</span>
-        </div>
-      </div>
-      
-      <div class="action-buttons">
-        <button 
-          @click="resetPuzzle" 
-          class="btn-secondary"
-          aria-label="Reset current puzzle"
-        >
-          🔄 Reset
-        </button>
-        <button 
-          @click="newGame" 
-          class="btn-primary"
-          aria-label="Start a new puzzle game"
-        >
-          🎮 New Game
-        </button>
-      </div>
-    </div>
+    <GameControls
+      v-if="!showPreview"
+      :moves="moves"
+      :elapsedTime="elapsedTime"
+      @reset="resetPuzzle"
+      @new-game="newGame"
+    />
 
     <!-- Ready to Play Button -->
     <div class="ready-controls" v-if="showPreview">
@@ -108,9 +83,22 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
-import { ANIMATION_DURATIONS, PUZZLE_COLORS, PUZZLE_CONFIG } from '@/utils/constants'
+import { ANIMATION_DURATIONS } from '@/utils/constants'
+import { usePuzzleLogic } from '@/composables/usePuzzleLogic'
+import PuzzlePiece from './PuzzlePiece.vue'
+import GameControls from './GameControls.vue'
 
 const gameStore = useGameStore()
+
+// Use puzzle logic composable
+const {
+  puzzleSize,
+  gamePieces,
+  gameState,
+  solvedPieces,
+  isMoveable,
+  getPieceStyle,
+} = usePuzzleLogic(gameStore)
 
 // Reactive state
 const isFlipped = ref(false)
@@ -119,58 +107,11 @@ const showPreview = ref(true)
 const touchStartIndex = ref(null)
 
 // Computed properties
-const puzzleSize = computed(() => gameStore.puzzleSize)
 const moves = computed(() => gameStore.moves)
 const elapsedTime = computed(() => gameStore.elapsedTime)
 const currentImage = computed(() => gameStore.currentPuzzle)
-const gamePieces = computed(() => gameStore.board)
-const gameState = computed(() => gameStore.gameState)
 
-// Generate solved pieces for preview
-const solvedPieces = computed(() => {
-  const size = puzzleSize.value
-  return Array.from({ length: size * size }, (_, i) => i)
-})
 
-// Check if a piece can move
-const isMoveable = (index) => {
-  if (!gamePieces.value.length) return false
-  
-  const size = puzzleSize.value
-  const emptyIndex = gamePieces.value.indexOf(0)
-  const emptyRow = Math.floor(emptyIndex / size)
-  const emptyCol = emptyIndex % size
-  const pieceRow = Math.floor(index / size)
-  const pieceCol = index % size
-  
-  // Check if piece is adjacent to empty space
-  return (
-    (Math.abs(pieceRow - emptyRow) === 1 && pieceCol === emptyCol) ||
-    (Math.abs(pieceCol - emptyCol) === 1 && pieceRow === emptyRow)
-  )
-}
-
-// Get CSS styles for each piece
-const getPieceStyle = (piece, index) => {
-  if (piece === PUZZLE_CONFIG.EMPTY_PIECE_VALUE) {
-    return {
-      opacity: 0,
-      pointerEvents: 'none'
-    }
-  }
-  
-  return {
-    backgroundColor: PUZZLE_COLORS[(piece - 1) % PUZZLE_COLORS.length],
-    aspectRatio: '1/1'
-  }
-}
-
-// Format time display
-const formatTime = (seconds) => {
-  const mins = Math.floor(seconds / 60)
-  const secs = seconds % 60
-  return `${mins}:${secs.toString().padStart(2, '0')}`
-}
 
 // Handle piece movement
 const movePiece = (index) => {
@@ -328,32 +269,7 @@ onMounted(() => {
   @apply select-none;
 }
 
-.game-controls {
-  @apply flex flex-col items-center space-y-4;
-}
 
-.game-stats {
-  @apply flex flex-col space-y-2 space-x-0;
-  @apply md:flex-row md:space-y-0 md:space-x-6;
-}
-
-.stat-item {
-  @apply flex flex-col items-center;
-}
-
-.stat-label {
-  @apply text-sm text-gray-600 font-medium;
-}
-
-.stat-value {
-  @apply text-xl font-bold text-puzzle-primary;
-  @apply md:text-2xl;
-}
-
-.action-buttons {
-  @apply flex flex-col space-y-2 space-x-0;
-  @apply md:flex-row md:space-y-0 md:space-x-4;
-}
 
 .ready-controls {
   @apply flex justify-center;
@@ -378,12 +294,6 @@ onMounted(() => {
     @apply text-2xl;
   }
   
-  .game-stats {
-    @apply flex-col space-y-2 space-x-0;
-  }
-  
-  .action-buttons {
-    @apply flex-col space-y-2 space-x-0;
-  }
+
 }
 </style> 

@@ -112,6 +112,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
+import { formatImageTitle, formatCategoryName } from '@/utils/formatters'
 import imageManifest from '@/data/images-manifest.json'
 
 const gameStore = useGameStore()
@@ -150,18 +151,7 @@ const getCategoryEmoji = (category) => {
   return emojis[category] || '🎯'
 }
 
-const formatCategoryName = (category) => {
-  return category.charAt(0).toUpperCase() + category.slice(1)
-}
 
-const formatImageTitle = (filename) => {
-  return filename
-    .replace(/\.(jpg|jpeg|png|webp|svg)$/i, '')
-    .replace(/[-_]/g, ' ')
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
-}
 
 // Image selection
 const selectImage = (image) => {
