@@ -62,6 +62,9 @@ onMounted(() => {
     async () => {
       gameStore.initializeGame(imageManifest)
       
+      // Set initial random color
+      gameStore.randomizeColor()
+      
       // Start with solved puzzle (no scrambling)
       gameStore.startTime = Date.now()
       console.log('🔢 Starting with solved numbers puzzle')
@@ -83,10 +86,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Phone Background - matches the pinkish background from the image */
+/* Phone Background - custom background color */
 .phone-background {
   @apply min-h-screen w-full;
-  background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 50%, #fef2f2 100%);
+  background: #F6EDF4;
   @apply flex items-center justify-center p-4;
 }
 
@@ -129,10 +132,11 @@ onMounted(() => {
   @apply p-3;
 }
 
-/* Phone Screen - the inner white area */
+/* Phone Screen - the inner area with dynamic background */
 .phone-screen {
   @apply w-full h-full;
-  @apply bg-white rounded-[1.875rem];
+  background: var(--current-puzzle-color);
+  @apply rounded-[1.875rem];
   @apply overflow-hidden;
   @apply relative;
   
@@ -183,11 +187,7 @@ onMounted(() => {
 
 /* Add subtle animations */
 .phone-frame {
-  transition: transform 0.3s ease-in-out;
-}
-
-.phone-frame:hover {
-  transform: translateY(-2px);
+  /* No animations needed */
 }
 
 /* Responsive adjustments for game content */

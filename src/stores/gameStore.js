@@ -17,6 +17,10 @@ export const useGameStore = defineStore('game', {
     moves: 0,
     startTime: null,
     
+    // Color theme
+    currentColor: 'red', // Default color
+    availableColors: ['red', 'pink', 'blue', 'green', 'orange'],
+    
     // Image management
     availableImages: [],
     shownImages: [],
@@ -118,6 +122,7 @@ export const useGameStore = defineStore('game', {
     
     // Start numbers puzzle directly
     startNumbersPuzzle() {
+      this.randomizeColor() // Pick new color for new game
       this.currentPuzzle = {
         id: 'numbers-puzzle',
         filename: 'numbers',
@@ -135,6 +140,7 @@ export const useGameStore = defineStore('game', {
     
     // Select an image and prepare puzzle (kept for future use)
     selectImage(image) {
+      this.randomizeColor() // Pick new color for new game
       this.currentPuzzle = image
       this.shownImages.push(image.id)
       this.generatePuzzle()
@@ -148,6 +154,7 @@ export const useGameStore = defineStore('game', {
     selectRandomImage() {
       const randomImage = this.randomUnshownImage
       if (randomImage) {
+        this.randomizeColor() // Pick new color for random game
         this.selectImage(randomImage)
       }
     },
@@ -377,6 +384,7 @@ export const useGameStore = defineStore('game', {
     
     // Reset current puzzle
     resetPuzzle() {
+      this.randomizeColor() // Pick new color on reset
       this.generatePuzzle()
       this.moves = 0
       this.startTime = Date.now()
@@ -386,6 +394,19 @@ export const useGameStore = defineStore('game', {
     // Start new game
     startNewGame() {
       this.startWelcome()
+    },
+    
+    /**
+     * Randomly select a color from available colors
+     */
+    randomizeColor() {
+      const randomIndex = Math.floor(Math.random() * this.availableColors.length)
+      this.currentColor = this.availableColors[randomIndex]
+      console.log(`🎨 New color selected: ${this.currentColor}`)
+      
+      // Update CSS custom property for immediate visual feedback
+      document.documentElement.style.setProperty('--current-puzzle-color', `var(--puzzle-${this.currentColor})`)
+      document.documentElement.style.setProperty('--current-puzzle-color-dark', `var(--puzzle-${this.currentColor}-dark)`)
     },
     
     // Reset shown images (for testing)

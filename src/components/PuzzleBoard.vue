@@ -241,8 +241,11 @@ onUnmounted(() => {
 }
 
 .puzzle-board {
-  @apply w-full h-full bg-white rounded-xl shadow-2xl border-4 border-puzzle-primary p-2;
-  @apply grid gap-1;
+  @apply w-full h-full rounded-xl border-4;
+  @apply grid gap-[0.1rem];
+  background: var(--current-puzzle-color-dark);
+  border-color: var(--current-puzzle-color-dark);
+  box-shadow: 0px 0px 2px 1px rgb(0 0 0 / 0.1);
 }
 
 .puzzle-board.grid-3x3 {
@@ -267,8 +270,7 @@ onUnmounted(() => {
 }
 
 .puzzle-piece.moveable {
-  @apply border-puzzle-accent shadow-lg cursor-grab;
-  @apply hover:scale-105 hover:shadow-xl;
+  @apply border-puzzle-accent cursor-grab;
   @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
   @apply active:scale-95 active:cursor-grabbing;
 }
@@ -283,14 +285,12 @@ onUnmounted(() => {
 
 .puzzle-piece.solved-piece {
   @apply border-gray-400 cursor-default;
-  @apply hover:scale-100 hover:shadow-md;
   @apply focus:ring-2 focus:ring-gray-400 focus:outline-none;
 }
 
 .piece-number {
   @apply text-2xl font-bold text-white;
   @apply md:text-3xl;
-  @apply filter drop-shadow-lg;
   @apply select-none;
 }
 

@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --puzzle-red: #E76A4B;
+  --puzzle-red-dark: color-mix(in srgb, var(--puzzle-red) 97%, black 3%);
+  
+  --puzzle-yellow: #E9C46A;
+  --puzzle-yellow-dark: color-mix(in srgb, var(--puzzle-yellow) 97%, black 3%);
+  
+  --puzzle-pink: #F2B2D1;
+  --puzzle-pink-dark: color-mix(in srgb, var(--puzzle-pink) 97%, black 3%);
+  
+  --puzzle-blue: #4D8EA8;
+  --puzzle-blue-dark: color-mix(in srgb, var(--puzzle-blue) 97%, black 3%);
+  
+  --puzzle-green: #2A9D8F;
+  --puzzle-green-dark: color-mix(in srgb, var(--puzzle-green) 97%, black 3%);
+  
+  --puzzle-orange: #F4A261;
+  --puzzle-orange-dark: color-mix(in srgb, var(--puzzle-orange) 97%, black 3%);
+  
+  /* Dynamic colors that change with game state */
+  --current-puzzle-color: var(--puzzle-red);
+  --current-puzzle-color-dark: var(--puzzle-red-dark);
+}
+
 @layer base {
   html {
     font-family: 'Comic Sans MS', cursive, system-ui, sans-serif;
@@ -42,9 +66,8 @@
 
 @layer components {
   .puzzle-piece {
-    @apply rounded-lg shadow-md bg-white border-2 border-gray-200;
+    @apply rounded-lg bg-white border-2 border-gray-200;
     @apply transition-all duration-300 ease-out;
-    @apply hover:shadow-lg hover:scale-105;
     @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
     @apply active:scale-95;
   }
