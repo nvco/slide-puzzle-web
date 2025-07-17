@@ -10,26 +10,27 @@
           <div class="phone-screen">
             <!-- Game Content -->
             <div class="game-content">
-              <header class="text-center mb-6">
-                <h1 class="text-2xl font-bold text-puzzle-primary mb-2">
-                  🧩 Number Puzzle 🧩
+              <header class="title-header">
+                <h1 class="puzzle-title">
+                  {{ titleText }}
                 </h1>
-                <p class="text-sm text-gray-600">
-                  Slide the pieces to solve the puzzle!
-                </p>
               </header>
               
               <main>
-                <PuzzleBoard />
+                <PuzzleBoard ref="puzzleBoardRef" />
               </main>
+
+              <div class="controls-container">
+                <GameControls @reset="resetPuzzle" />
+              </div>
             </div>
           </div>
           
           <!-- Phone Frame Details -->
           <!-- Side buttons -->
-          <div class="side-button side-button-left" style="top: 120px;"></div>
-          <div class="side-button side-button-left" style="top: 190px;"></div>
-          <div class="side-button side-button-right" style="top: 120px;"></div>
+          <div class="side-button side-button-left side-button-volume-up"></div>
+          <div class="side-button side-button-left side-button-volume-down"></div>
+          <div class="side-button side-button-right side-button-power"></div>
         </div>
       </div>
     </div>
@@ -38,18 +39,27 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { trackComponentMount, logPerformanceReport } from '@/utils/performance'
 import { handleAsync, logError } from '@/utils/errorHandler'
 import PuzzleBoard from '@/components/PuzzleBoard.vue'
+import GameControls from '@/components/GameControls.vue'
 import imageManifest from '@/data/images-manifest.json'
 
 const gameStore = useGameStore()
 
+// Refs
+const puzzleBoardRef = ref(null)
+
 // Computed properties for game state
 const showPuzzle = computed(() => gameStore.gameState === 'playing' || gameStore.gameState === 'won')
 const currentPuzzle = computed(() => gameStore.currentPuzzle)
+
+// Reactive title based on game state
+const titleText = computed(() => {
+  return gameStore.gameState === 'won' ? 'Told ya !' : 'You can do it !'
+})
 
 // Initialize app
 onMounted(() => {
@@ -83,6 +93,13 @@ onMounted(() => {
     setInterval(logPerformanceReport, 30000)
   }
 })
+
+const resetPuzzle = () => {
+  if (puzzleBoardRef.value) {
+    puzzleBoardRef.value.resetPuzzle()
+  }
+  // Title will automatically update to "You can do it !" when game state changes
+}
 </script>
 
 <style scoped>
@@ -147,8 +164,14 @@ onMounted(() => {
 /* Game Content - contains the actual game */
 .game-content {
   @apply w-full h-full;
-  @apply flex flex-col items-center justify-center;
-  @apply p-4 overflow-auto;
+  @apply flex flex-col items-center;
+  @apply overflow-auto;
+}
+
+/* Main game area that takes only content space */
+.game-content main {
+  @apply flex items-center justify-center;
+  @apply w-full;
 }
 
 /* Side Buttons */
@@ -166,6 +189,19 @@ onMounted(() => {
 .side-button-right {
   right: -6px;
   height: 80px;
+}
+
+/* Side Button Positioning */
+.side-button-volume-up {
+  top: 120px;
+}
+
+.side-button-volume-down {
+  top: 190px;
+}
+
+.side-button-power {
+  top: 120px;
 }
 
 /* Utility classes for easy size adjustment */
@@ -192,16 +228,39 @@ onMounted(() => {
 
 /* Responsive adjustments for game content */
 @media (max-width: 640px) {
-  .game-content {
-    @apply p-2;
+  
+  .title-header {
+    @apply py-4 px-2;
+    min-height: 80px;
   }
   
-  .game-content header h1 {
-    @apply text-xl;
+  .puzzle-title {
+    font-size: 2.5rem;
+    line-height: 1;
   }
-  
-  .game-content header p {
-    @apply text-xs;
-  }
+}
+
+/* Title Header Layout */
+.title-header {
+  @apply flex items-center justify-center;
+  @apply py-6 px-4;
+  @apply flex-1;
+  min-height: 100px; /* Ensure adequate space for the title */
+}
+
+/* Puzzle Title Style */
+.puzzle-title {
+  font-family: 'Permanent Marker', cursive;
+  color: color-mix(in srgb, var(--current-puzzle-color) 60%, black 30%);
+  font-size: 4rem;
+  line-height: 1.1;
+  margin: 0;
+  text-align: center;
+}
+
+/* Controls Container */
+.controls-container {
+  @apply flex justify-center items-center;
+  @apply flex-1;
 }
 </style> 

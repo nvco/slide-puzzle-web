@@ -4,19 +4,19 @@
 
 :root {
   --puzzle-red: #E76A4B;
-  --puzzle-red-dark: color-mix(in srgb, var(--puzzle-red) 97%, black 3%);
+  --puzzle-red-dark: color-mix(in srgb, var(--puzzle-red) 91%, black 9%);
   
   --puzzle-yellow: #E9C46A;
-  --puzzle-yellow-dark: color-mix(in srgb, var(--puzzle-yellow) 97%, black 3%);
+  --puzzle-yellow-dark: color-mix(in srgb, var(--puzzle-yellow) 91%, black 9%);
   
   --puzzle-blue: #4D8EA8;
-  --puzzle-blue-dark: color-mix(in srgb, var(--puzzle-blue) 97%, black 3%);
+  --puzzle-blue-dark: color-mix(in srgb, var(--puzzle-blue) 91%, black 9%);
   
   --puzzle-green: #2A9D8F;
-  --puzzle-green-dark: color-mix(in srgb, var(--puzzle-green) 97%, black 3%);
+  --puzzle-green-dark: color-mix(in srgb, var(--puzzle-green) 91%, black 9%);
   
   --puzzle-orange: #F4A261;
-  --puzzle-orange-dark: color-mix(in srgb, var(--puzzle-orange) 97%, black 3%);
+  --puzzle-orange-dark: color-mix(in srgb, var(--puzzle-orange) 91%, black 9%);
   
   /* Dynamic colors that change with game state */
   --current-puzzle-color: var(--puzzle-red);

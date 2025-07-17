@@ -63,14 +63,13 @@ function onKeyDownSpace(e) { emit('keydown-space', e) }
   @apply flex items-center justify-center;
   @apply min-w-11 min-h-11; /* Ensure 44px minimum touch target */
   @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
-  @apply active:scale-95;
+  @apply cursor-default; /* Default cursor for non-moveable pieces */
 }
 .puzzle-piece.empty {
   @apply opacity-0 pointer-events-none cursor-default;
 }
 .puzzle-piece.moveable {
   @apply border-puzzle-accent shadow-lg cursor-grab;
-  @apply hover:scale-105 hover:shadow-xl;
   @apply focus:ring-2 focus:ring-puzzle-accent focus:outline-none;
   @apply active:scale-95 active:cursor-grabbing;
 }
@@ -82,7 +81,6 @@ function onKeyDownSpace(e) { emit('keydown-space', e) }
 }
 .puzzle-piece.solved-piece {
   @apply border-gray-400 cursor-default;
-  @apply hover:scale-100 hover:shadow-md;
   @apply focus:ring-2 focus:ring-gray-400 focus:outline-none;
 }
 .piece-number {

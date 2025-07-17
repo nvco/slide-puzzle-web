@@ -27,54 +27,23 @@
           @click="() => movePiece(index)"
           @touchstart="() => handleTouchStart(index)"
           @touchend="() => handleTouchEnd(index)"
-          @keydown-enter="() => movePiece(index)"
-          @keydown-space="() => movePiece(index)"
+          @keydown.enter="() => movePiece(index)"
+          @keydown.space="() => movePiece(index)"
         />
       </div>
     </div>
 
-    <!-- Game Controls -->
-    <GameControls
-      @reset="resetPuzzle"
-    />
-
-    <!-- Initial Big Bang Celebration -->
-    <div 
-      v-if="showBigBang" 
-      class="big-bang-container"
-    >
-      <div class="big-bang-explosion">
-        <div class="bang-text">🎉 SOLVED! 🎉</div>
-        <div class="bang-stars">
-          <div v-for="i in 20" :key="`star-${i}`" class="star" :style="getStarStyle(i)"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Ongoing Confetti Celebration -->
-    <div 
-      v-if="showCelebration" 
-      class="confetti-container"
-    >
-      <div 
-        v-for="i in 50" 
-        :key="i"
-        class="confetti"
-        :style="getConfettiStyle(i)"
-      ></div>
-    </div>
+    <!-- Controls moved to App.vue -->
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
-import { ANIMATION_DURATIONS } from '@/utils/constants'
 import { usePuzzleLogic } from '@/composables/usePuzzleLogic'
 import { handleAsync, logError, AppError, ERROR_TYPES, ERROR_SEVERITY } from '@/utils/errorHandler'
 import { throttle } from '@/utils/errorHandler'
 import PuzzlePiece from './PuzzlePiece.vue'
-import GameControls from './GameControls.vue'
 
 const gameStore = useGameStore()
 
@@ -91,49 +60,9 @@ const {
 // Reactive state
 const animating = ref(false)
 const touchStartIndex = ref(null)
-const showCelebration = ref(false)
-const showBigBang = ref(false)
 
 // Computed properties
 const currentImage = computed(() => gameStore.currentPuzzle)
-
-
-
-/**
- * Generate confetti animation styles
- * @param {number} index - Confetti piece index
- * @returns {Object} CSS style object
- */
-const getConfettiStyle = (index) => {
-  const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#F4A460', '#87CEEB']
-  const color = colors[index % colors.length]
-  const left = Math.random() * 100
-  const animationDelay = Math.random() * 3
-  const animationDuration = 2 + Math.random() * 2
-  
-  return {
-    left: `${left}%`,
-    backgroundColor: color,
-    animationDelay: `${animationDelay}s`,
-    animationDuration: `${animationDuration}s`
-  }
-}
-
-/**
- * Generate star animation styles for big bang effect
- * @param {number} index - Star index
- * @returns {Object} CSS style object
- */
-const getStarStyle = (index) => {
-  const angle = (index / 20) * 360
-  const distance = 100 + Math.random() * 50
-  const delay = Math.random() * 0.5
-  
-  return {
-    transform: `rotate(${angle}deg) translateY(-${distance}px)`,
-    animationDelay: `${delay}s`
-  }
-}
 
 // Throttled piece movement to prevent rapid clicking
 const throttledMovePiece = throttle((index) => {
@@ -146,7 +75,7 @@ const throttledMovePiece = throttle((index) => {
         animating.value = true
         setTimeout(() => {
           animating.value = false
-        }, ANIMATION_DURATIONS.PIECE_MOVE)
+        }, 300) // Animation duration for piece movement
       }
       return moved
     },
@@ -180,42 +109,14 @@ const handleTouchEnd = (index) => {
 const resetPuzzle = () => {
   gameStore.resetPuzzle()
   animating.value = false
-  showCelebration.value = false
-  showBigBang.value = false
 }
 
 
 
-// Play again with same image
-const playAgain = () => {
-  showCelebration.value = false
-  showBigBang.value = false
-  resetPuzzle()
-}
-
-// Celebrate win
-const celebrateWin = () => {
-  console.log('🎉 Puzzle solved!')
-  
-  // Start with big bang effect
-  showBigBang.value = true
-  console.log('💥 Big bang started')
-  
-  // After big bang, start ongoing confetti
-  setTimeout(() => {
-    showBigBang.value = false
-    showCelebration.value = true
-    console.log('🎉 Ongoing confetti started')
-  }, 2000) // Big bang lasts 2 seconds
-}
-
-// Watch for game state changes
+// Watch for game state changes for any needed logic
 watch(gameState, (newState) => {
-  if (newState === 'won' && !showCelebration.value) {
-    console.log('🎉 Game state changed to won, triggering celebration')
-    setTimeout(() => {
-      celebrateWin()
-    }, ANIMATION_DURATIONS.VICTORY_DELAY)
+  if (newState === 'won') {
+    console.log('🎉 Puzzle solved!')
   }
 })
 
@@ -228,24 +129,31 @@ onUnmounted(() => {
   animating.value = false
   console.log('🧩 PuzzleBoard component unmounted')
 })
+
+// Expose methods for parent component
+defineExpose({
+  resetPuzzle
+})
 </script>
 
 <style scoped>
 .puzzle-container {
-  @apply flex flex-col items-center space-y-6;
+  @apply flex flex-col items-center pt-4 pb-6;
+  width: 90%;
 }
 
 .puzzle-board-wrapper {
-  @apply relative w-72 h-72;
+  @apply relative w-full h-auto;
   @apply transition-transform duration-500 ease-in-out;
 }
 
 .puzzle-board {
   @apply w-full h-full rounded-xl border-4;
   @apply grid gap-[0.1rem];
+  @apply aspect-square;
   background: var(--current-puzzle-color-dark);
   border-color: var(--current-puzzle-color-dark);
-  box-shadow: 0px 0px 2px 1px rgb(0 0 0 / 0.1);
+  box-shadow: 0px 0px 2px 1px rgb(0 0 0 / 0.21);
 }
 
 .puzzle-board.grid-3x3 {
@@ -301,7 +209,7 @@ onUnmounted(() => {
 /* Mobile responsiveness */
 @media (max-width: 640px) {
   .puzzle-board-wrapper {
-    @apply w-64 h-64;
+    @apply w-full h-auto;
   }
   
   .puzzle-piece {
@@ -312,105 +220,5 @@ onUnmounted(() => {
     @apply text-2xl;
   }
 }
-
-/* Big Bang Celebration */
-.big-bang-container {
-  @apply fixed inset-0 pointer-events-none z-50;
-  @apply flex items-center justify-center;
-  @apply overflow-hidden;
-}
-
-.big-bang-explosion {
-  @apply relative;
-  animation: big-bang-pulse 2s ease-out;
-}
-
-.bang-text {
-  @apply text-6xl font-bold text-yellow-400;
-  @apply filter drop-shadow-lg;
-  @apply animate-bounce;
-  animation: big-bang-text 2s ease-out;
-}
-
-.bang-stars {
-  @apply absolute inset-0;
-  @apply flex items-center justify-center;
-}
-
-.star {
-  @apply absolute w-4 h-4;
-  @apply bg-yellow-300;
-  @apply rounded-full;
-  animation: star-explosion 2s ease-out;
-}
-
-/* Confetti Animation */
-.confetti-container {
-  @apply fixed inset-0 pointer-events-none z-50;
-  @apply overflow-hidden;
-}
-
-.confetti {
-  @apply absolute w-2 h-2 rounded-sm;
-  @apply opacity-80;
-  animation: confetti-fall 3s linear infinite;
-}
-
-@keyframes big-bang-pulse {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0;
-  }
-}
-
-@keyframes big-bang-text {
-  0% {
-    transform: scale(0) rotate(-180deg);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.5) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 0;
-  }
-}
-
-@keyframes star-explosion {
-  0% {
-    transform: scale(0) rotate(0deg);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1) rotate(180deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-@keyframes confetti-fall {
-  0% {
-    transform: translateY(-100vh) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
-  }
-}
-
 
 </style> 
