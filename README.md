@@ -1,6 +1,8 @@
-# 🧩 Slide Puzzle
+# Slide Puzzle
 
 A modern, mobile-first slide puzzle game built with Vue.js 3. Features a beautiful phone frame design, smooth animations, and dynamic color themes that make solving puzzles delightful and engaging.
+
+[Demo here](https://nvco.github.io/slide-puzzle-web) 
 
 ## ✨ Features
 
@@ -8,12 +10,6 @@ A modern, mobile-first slide puzzle game built with Vue.js 3. Features a beautif
 - 🎯 **Guaranteed Solvable Puzzles** - Smart shuffling algorithm ensures every puzzle can be solved
 - ♿ **Accessibility Focused** - WCAG 2.1 AA compliant with keyboard navigation
 - ⚡ **Lightning Fast** - Built with Vite for optimal performance
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18 or higher
-- npm or yarn
 
 ## 🛠️ Tech Stack
 
@@ -68,7 +64,3 @@ The game uses a **guaranteed solvable shuffling algorithm**:
 - Inspired by classic sliding puzzle toys
 - Built with modern web technologies for a smooth, native-like experience
 - Designed with accessibility and mobile-first principles
-
----
-
-[Play the game live!](https://nvco.github.io/slide-puzzle-web) 
