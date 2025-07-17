@@ -106,6 +106,26 @@ This project uses build-time image manifest generation. To add new puzzle images
 - **Validation**: The `isSolvable()` function in `usePuzzleLogic` checks puzzle solvability
 - **Celebration**: Triggered via game state watching in `PuzzleBoard.vue`
 
+## 📁 Documentation Structure
+
+This project uses a structured internal documentation approach:
+
+- **`CONTEXT.md`** - This file - Internal project context and overview
+- **`context/`** folder - Detailed technical documentation:
+  - `architecture.md` - Technical architecture and design decisions
+  - `development.md` - Development setup, workflow, and guidelines
+  - `design_system.md` - UI/UX design system and component guidelines
+  - `project_status.md` - Project progress, phases, and status tracking
+
+### Documentation Update Guidelines
+When updating project documentation:
+- **Technical decisions**: Update `context/architecture.md`
+- **Development process**: Update `context/development.md`
+- **Design changes**: Update `context/design_system.md`
+- **Project progress**: Update `context/project_status.md`
+- **Overall context**: Update this file (`CONTEXT.md`)
+- **User-facing information**: Add to relevant context files as needed
+
 ---
 
 *For detailed documentation, see the context/ folder. Update project status regularly in `context/project-status.md`.*

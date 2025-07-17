@@ -94,6 +94,7 @@
 - ✅ **Mobile-first**: Primary focus on mobile interaction
 - ✅ **Single-page app**: Everything loads on first visit
 - ✅ **Documentation structure**: context/ folder for organized docs
+- ✅ **Documentation restructure**: CONTEXT.md for internal context, context/ for technical docs, README.md managed separately
 
 ### UX Flow Decisions
 - ✅ **Welcome animation**: Demo sliding + greeting message

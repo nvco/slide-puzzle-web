@@ -117,6 +117,15 @@ Deployment configuration and instructions will be added during project setup.
 - Small, focused commits
 - Include manifest updates when adding images
 
+### Documentation Updates
+- Update `CONTEXT.md` for project context changes
+- Update specific `context/*.md` files for technical documentation:
+  - `context/architecture.md` - Technical decisions and architecture
+  - `context/development.md` - Development process and guidelines
+  - `context/design_system.md` - Design and UI changes
+  - `context/project_status.md` - Project progress and milestones
+- Important user-facing information can be added to relevant context files
+
 ### Branch Strategy
 - `main`: Production-ready code
 - Feature branches for new functionality
