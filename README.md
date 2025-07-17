@@ -53,7 +53,7 @@ The game uses a **guaranteed solvable shuffling algorithm**:
 
 ### Win Detection
 - Automatically detects when puzzle is solved (1-8 in order, empty space at position 8)
-- Triggers celebration sequence with confetti and game statistics
+- Triggers celebration 
 
 ## 📱 Browser Support
 

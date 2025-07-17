@@ -3,7 +3,7 @@
     <div class="action-buttons">
       <button 
         @click="onReset" 
-        :class="['btn-icon', { clicked: isClicked }]"
+        :class="['btn-icon', { clicked: isClicked, pulsing: isPuzzleSolved }]"
         aria-label="Start new puzzle game"
       >
         <RotateCcw :size="48" />
@@ -13,11 +13,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { RotateCcw } from 'lucide-vue-next'
+import { useGameStore } from '@/stores/gameStore'
 
+const gameStore = useGameStore()
 const emit = defineEmits(['reset'])
 const isClicked = ref(false)
+
+// Track if puzzle is solved to trigger pulsing
+const isPuzzleSolved = computed(() => gameStore.gameState === 'won')
 
 function onReset() {
   // Trigger the click animation
@@ -54,6 +59,19 @@ function onReset() {
 
 .btn-icon.clicked {
   opacity: 0.3;
+}
+
+.btn-icon.pulsing {
+  animation: pulse-icon 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-icon {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 /* Mobile responsiveness */
