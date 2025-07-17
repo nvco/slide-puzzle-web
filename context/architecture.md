@@ -55,12 +55,12 @@
   - manifest.json
 /scripts
   - generate-image-manifest.js
-/readme
+/context
   - architecture.md
   - development.md
   - design-system.md
   - project-status.md
-README.md
+CONTEXT.md
 ```
 
 ## Image Management Strategy

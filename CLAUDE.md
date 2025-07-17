@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # Project Guidelines
 Follow all coding rules and guidelines specified in the `.cursor/rules/` folder.
-Follow project details and updates in `README.md` and in the `readme/` folder.
+Follow project details and updates in `CONTEXT.md` and in the `context/` folder.
 See original project ideas in `discovery/` folder.
 
 ## Development Commands

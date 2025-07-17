@@ -65,4 +65,4 @@ These references capture the essential visual elements: bright primary colors, r
 
 ---
 
-*This document captures the core creative vision. For technical implementation details, development setup, and project management, see the comprehensive documentation starting with README.md.*
+*This document captures the core creative vision. For technical implementation details, development setup, and project management, see the comprehensive documentation starting with CONTEXT.md.*

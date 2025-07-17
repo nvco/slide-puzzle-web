@@ -93,7 +93,7 @@
 - ✅ **Random with memory**: Track shown images to ensure variety
 - ✅ **Mobile-first**: Primary focus on mobile interaction
 - ✅ **Single-page app**: Everything loads on first visit
-- ✅ **Documentation structure**: readme/ folder for organized docs
+- ✅ **Documentation structure**: context/ folder for organized docs
 
 ### UX Flow Decisions
 - ✅ **Welcome animation**: Demo sliding + greeting message

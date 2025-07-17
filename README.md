@@ -1,111 +1,74 @@
-# Slide Puzzle Website
+# 🧩 Slide Puzzle
 
-A modern, kid-friendly slide puzzle website that mimics the look and feel of classic plastic slide puzzles. Built with Vue.js and designed for mobile-first interaction.
+A modern, mobile-first slide puzzle game built with Vue.js 3. Features a beautiful phone frame design, smooth animations, and dynamic color themes that make solving puzzles delightful and engaging.
 
-## 🎯 Project Overview
+## ✨ Features
 
-Users select from a curated collection of images to create puzzles and solve them in an engaging, toy-like interface. The experience includes welcome animations, 3D flip transitions, and celebration sequences that make the digital puzzle feel like a physical toy.
+- 📱 **Mobile-First Design** - Optimized touch interactions in a phone frame mockup
+- 🎯 **Guaranteed Solvable Puzzles** - Smart shuffling algorithm ensures every puzzle can be solved
+- ♿ **Accessibility Focused** - WCAG 2.1 AA compliant with keyboard navigation
+- ⚡ **Lightning Fast** - Built with Vite for optimal performance
 
 ## 🚀 Quick Start
 
-See Development Setup: `readme/development.md` for complete installation and setup instructions.
+### Prerequisites
+- Node.js 18 or higher
+- npm or yarn
 
-## 📱 Target Audience
+## 🛠️ Tech Stack
 
-- **Primary**: Children (ages 4-12)
-- **Secondary**: Parents and educators
-- **Usage**: Primarily mobile devices, responsive for all screen sizes
+- **[Vue.js 3](https://vuejs.org/)** - Progressive JavaScript framework with Composition API
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[Vite](https://vitejs.dev/)** - Fast build tool and development server
+- **[Pinia](https://pinia.vuejs.org/)** - State management for Vue
 
-## 🎮 User Experience
+## 📁 Project Structure
 
-1. **Welcome Animation**: Puzzle demos sliding movements and shows greeting
-2. **Image Selection**: Choose from curated image gallery
-3. **Preview**: See the completed puzzle before starting
-4. **3D Flip**: Dramatic transition when ready to play
-5. **Gameplay**: Touch/click to slide pieces
-6. **Victory**: Celebration with confetti animation and victory message
+```
+src/
+├── components/          # Vue components
+│   ├── PuzzleBoard.vue    # Main game board
+│   ├── PuzzlePiece.vue    # Individual puzzle pieces
+│   └── GameControls.vue   # Game controls and stats
+├── stores/              # Pinia stores
+│   └── gameStore.js       # Game state management
+├── composables/         # Vue composables
+│   └── usePuzzleLogic.js  # Core puzzle algorithms
+├── utils/               # Utility functions
+└── styles/              # Global styles and CSS variables
+```
 
-## 🧩 Puzzle Mechanics
+## 🎯 Core Algorithms
 
-### Solvable Shuffling Algorithm
-The puzzle uses a **solvable shuffling algorithm** that ensures every generated puzzle can be solved:
+### Solvable Puzzle Generation
+The game uses a **guaranteed solvable shuffling algorithm**:
+- Starts with the solved state
+- Makes only valid moves to scramble the puzzle
+- Ensures every generated puzzle has a solution
 
-- **Valid Move Generation**: Starts with the solved state and makes random valid moves
-- **Guaranteed Solvability**: Only uses moves that maintain puzzle solvability
-- **Proper Scrambling**: Makes 50+ random valid moves to ensure good scrambling
-- **Fallback Safety**: Includes a safe shuffle method if the main algorithm fails
+### Move Validation
+- Pieces can only move if adjacent to the empty space
+- Touch and click interactions are validated before allowing movement
+- Smooth animations provide visual feedback
 
-### Solvability Check
-For 3x3 puzzles, the algorithm uses the **inversion count method**:
-- Counts inversions (pairs where a larger number comes before a smaller number)
-- A 3x3 puzzle is solvable if the inversion count is even
-- Larger puzzles are always solvable when using valid moves
+### Win Detection
+- Automatically detects when puzzle is solved (1-8 in order, empty space at position 8)
+- Triggers celebration sequence with confetti and game statistics
 
-### Celebration System
-When the puzzle is solved:
-- **Confetti Animation**: 50 colorful confetti pieces fall from the top
-- **Victory Message**: Displays completion stats (moves and time)
-- **Action Buttons**: Options to play again or choose a new image
-- **Smooth Transitions**: Fade-in overlay with bounce-in animation
+## 📱 Browser Support
 
-## 🛠 Tech Stack
+- ✅ Chrome (last 2 versions)
+- ✅ Firefox (last 2 versions)  
+- ✅ Safari (last 2 versions)
+- ✅ Edge (last 2 versions)
+- ✅ Mobile browsers (iOS Safari, Android Chrome)
 
-- **Framework**: Vue.js 3 with Composition API
-- **Styling**: Tailwind CSS
-- **Build Tool**: Vite
-- **State Management**: Pinia
-- **Image Management**: Build-time manifest generation
+## 🌟 Acknowledgments
 
-## 📚 Documentation
-
-- **Game Design Concept**: `slide-puzzle-initial-context.md` - Core creative vision and magical user experience flow
-- Architecture & Technical Details: `readme/architecture.md`
-- Development Setup & Workflow: `readme/development.md`
-- Design System & UI Guidelines: `readme/design-system.md`
-- Project Status & Todos: `readme/project-status.md`
-
-## 🎨 Design Philosophy
-
-Playful, engaging interface with bright colors, smooth animations, and tactile feel that mimics physical slide puzzles. Mobile-first design with accessibility compliance and clean, semantic HTML structure.
-
-## 📝 Current Status
-
-**Phase 1**: Core functionality development ✅
-- [x] Project setup and base components
-- [x] Image manifest system
-- [x] Puzzle mechanics and game logic
-- [x] Mobile-responsive layout
-- [x] Solvable shuffling algorithm
-- [x] Celebration system with confetti animation
-
-**Phase 2**: Accessibility and UX improvements ✅
-- [x] Focus states and keyboard navigation
-- [x] ARIA labels and semantic HTML
-- [x] Touch target sizing for mobile
-- [x] Error handling and validation
-
-**Phase 3**: Code organization and performance ✅
-- [x] Component extraction and refactoring
-- [x] Composable logic separation
-- [x] Performance optimizations
-- [x] JavaScript best practices
-
-## 🚧 TODO
-
-- [ ] **Create proper favicon**: Design and implement a custom favicon for the slide puzzle app (currently using placeholder `favicon.svg`)
-
-## 🤝 Contributing
-
-This project uses build-time image manifest generation. To add new puzzle images:
-1. Add image files to `/src/assets/puzzle-images/[category]/`
-2. Restart development server
-3. Images automatically appear in the application
-
-### Key Technical Notes
-- **Shuffling**: Always use the solvable shuffling algorithm in `gameStore.scrambleBoard()`
-- **Validation**: The `isSolvable()` function in `usePuzzleLogic` checks puzzle solvability
-- **Celebration**: Triggered via game state watching in `PuzzleBoard.vue`
+- Inspired by classic sliding puzzle toys
+- Built with modern web technologies for a smooth, native-like experience
+- Designed with accessibility and mobile-first principles
 
 ---
 
-*For detailed documentation, see the readme/ folder. Update project status regularly in `readme/project-status.md`.*
+[Play the game live!](https://nvco.github.io/slide-puzzle-web) 
