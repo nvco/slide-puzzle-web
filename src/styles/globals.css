@@ -9,9 +9,6 @@
   --puzzle-yellow: #E9C46A;
   --puzzle-yellow-dark: color-mix(in srgb, var(--puzzle-yellow) 97%, black 3%);
   
-  --puzzle-pink: #F2B2D1;
-  --puzzle-pink-dark: color-mix(in srgb, var(--puzzle-pink) 97%, black 3%);
-  
   --puzzle-blue: #4D8EA8;
   --puzzle-blue-dark: color-mix(in srgb, var(--puzzle-blue) 97%, black 3%);
   

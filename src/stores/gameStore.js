@@ -19,7 +19,7 @@ export const useGameStore = defineStore('game', {
     
     // Color theme
     currentColor: 'red', // Default color
-    availableColors: ['red', 'pink', 'blue', 'green', 'orange'],
+    availableColors: ['red', 'blue', 'green', 'orange'],
     
     // Image management
     availableImages: [],
