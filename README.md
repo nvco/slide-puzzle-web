@@ -1,6 +1,6 @@
 # Slide Puzzle
 
-A modern, mobile-first slide puzzle game built with Vue.js 3. Features a beautiful phone frame design, smooth animations, and dynamic color themes that make solving puzzles delightful and engaging.
+A simple slide puzzle game to prove the concept. Built with Vue.js 3. Features a beautiful phone frame design, animations, and dynamic color themes that make solving puzzles delightful and engaging.
 
 [Demo here](https://nvco.github.io/slide-puzzle-web) 
 
